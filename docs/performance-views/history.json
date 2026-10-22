@@ -1,0 +1,171 @@
+{
+  "hardware": "8 × 80 GB Hopper GPUs",
+  "rows": [
+    {
+      "milestone": "M1",
+      "rounds": "R1–R4",
+      "change": "Skip LM recomputation, lean activation checkpoints, permuted MoT residual stream, FSDP forward prefetch and expandable allocator",
+      "speedup": 1.2072,
+      "incremental_speedup": 1.2072,
+      "incremental_step_time_reduction_percent": 17.16368455931081,
+      "tier": "N0",
+      "status": "PASS",
+      "reference_s": 1.4397,
+      "candidate_s": 1.1926,
+      "windows": {
+        "ref_a": [
+          142.578,
+          144.381
+        ],
+        "cand": [
+          120.054,
+          118.463
+        ],
+        "ref_b": [
+          144.008,
+          144.895
+        ]
+      }
+    },
+    {
+      "milestone": "M2",
+      "rounds": "R5–R8",
+      "change": "Compiled elementwise/two-region LM graphs, FSDP post-divide, fused AdamW",
+      "speedup": 1.5226,
+      "incremental_speedup": 1.2612657388999335,
+      "incremental_step_time_reduction_percent": 20.714567187705235,
+      "tier": "N1",
+      "status": "PASS",
+      "reference_s": 1.4406,
+      "candidate_s": 0.9461,
+      "windows": {
+        "ref_a": [
+          142.089,
+          144.496
+        ],
+        "cand": [
+          94.753,
+          94.473
+        ],
+        "ref_b": [
+          143.763,
+          145.893
+        ]
+      }
+    },
+    {
+      "milestone": "M3",
+      "rounds": "R10",
+      "change": "Skip remaining outer recomputation with selected MLP recomputation inside compiled regions",
+      "speedup": 1.6547,
+      "incremental_speedup": 1.0867594903454618,
+      "incremental_step_time_reduction_percent": 7.9833202393183145,
+      "tier": "N1",
+      "status": "PASS",
+      "reference_s": 1.4327,
+      "candidate_s": 0.8658,
+      "windows": {
+        "ref_a": [
+          142.799,
+          143.725
+        ],
+        "cand": [
+          86.596,
+          86.573
+        ],
+        "ref_b": [
+          142.901,
+          143.653
+        ]
+      }
+    },
+    {
+      "milestone": "M4",
+      "rounds": "R11, R14, R15, R17 repair",
+      "change": "Keep ViT parameters gathered, tuned FlexAttention, explicit ViT layer backward, fixed asynchronous VAE overlap",
+      "speedup": 1.7545,
+      "incremental_speedup": 1.0603130476823592,
+      "incremental_step_time_reduction_percent": 5.688230265032768,
+      "tier": "N1",
+      "status": "PASS",
+      "reference_s": 1.4296,
+      "candidate_s": 0.8148,
+      "windows": {
+        "ref_a": [
+          142.7,
+          143.13
+        ],
+        "cand": [
+          81.891,
+          81.068
+        ],
+        "ref_b": [
+          142.072,
+          143.921
+        ]
+      }
+    },
+    {
+      "milestone": "M5",
+      "rounds": "R9, R18–R19",
+      "change": "Remove redundant MoT host sync and defer logging synchronization",
+      "speedup": 1.7776,
+      "incremental_speedup": 1.013166144200627,
+      "incremental_step_time_reduction_percent": 1.2995049504950562,
+      "tier": "N1",
+      "status": "PASS",
+      "reference_s": 1.4329,
+      "candidate_s": 0.8061,
+      "windows": {
+        "ref_a": [
+          143.372,
+          142.758
+        ],
+        "cand": [
+          80.85,
+          80.362
+        ],
+        "ref_b": [
+          143.342,
+          143.679
+        ]
+      }
+    },
+    {
+      "milestone": "M6",
+      "rounds": "R33",
+      "change": "Reversible whole-document LM balancing",
+      "speedup": 1.8249,
+      "incremental_speedup": 1.026608910891089,
+      "incremental_step_time_reduction_percent": 2.591922845087391,
+      "tier": "N1",
+      "status": "PASS",
+      "reference_s": 1.4367,
+      "candidate_s": 0.7873,
+      "windows": {
+        "ref_a": [
+          143.013,
+          144.947
+        ],
+        "cand": [
+          79.177,
+          78.277
+        ],
+        "ref_b": [
+          143.051,
+          143.674
+        ]
+      }
+    },
+    {
+      "milestone": "M7",
+      "rounds": "R40",
+      "change": "Flat-layer compilation with static shape hints; rejected",
+      "speedup": 1.8972,
+      "status": "INCORRECT",
+      "tier": "N1",
+      "reference_s": 1.4444,
+      "candidate_s": 0.7613
+    }
+  ]
+}

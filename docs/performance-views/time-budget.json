@@ -1,0 +1,42 @@
+{
+  "steps": 4,
+  "s_per_step": 0.9149,
+  "gpu_busy_fraction": 0.934,
+  "nccl_exposed_s_per_step": 0.2206,
+  "compute_union_s_per_step": 0.6338,
+  "categories": {
+    "nccl": {
+      "s_per_step": 0.7387,
+      "share": 0.5327
+    },
+    "gemm": {
+      "s_per_step": 0.3211,
+      "share": 0.2316
+    },
+    "attention": {
+      "s_per_step": 0.1182,
+      "share": 0.0853
+    },
+    "copy/index": {
+      "s_per_step": 0.0665,
+      "share": 0.0479
+    },
+    "triton": {
+      "s_per_step": 0.0659,
+      "share": 0.0475
+    },
+    "elementwise/reduce": {
+      "s_per_step": 0.0621,
+      "share": 0.0448
+    },
+    "other": {
+      "s_per_step": 0.0142,
+      "share": 0.0103
+    }
+  },
+  "configuration": "M6",
+  "scope": "Latest retained-stack profile, rank 0; overhead and overlapping kernels, not benchmark timing",
+  "earlier_compute_ceiling_speedup": 2.1,
+  "earlier_max_to_mean_packed_length": 1.24,
+  "earlier_gemm_peak_fraction": 0.51
+}

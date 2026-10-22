@@ -1,0 +1,8 @@
+# Repository instructions
+
+- Preserve official BAGEL-7B-MoT SFT: 8 ranks, FSDP HYBRID_SHARD 1×8, FP32 parameters/AdamW/EMA with BF16 compute, AdamW 2e-5, betas 0.9/0.95, eps 1e-15, clip 1.0, EMA 0.9999, 200 warmup steps then constant LR. Keep data order, RNG use and both CE/MSE objectives. No FP8, INT8 or FP16.
+- M6 achieved 1.8249× per-step speedup in the frozen full check on 8 × 80 GB Hopper GPUs. The 3× goal was not reached. Do not present this as end-to-end or time-to-quality speedup.
+- All optimization switches are off by default. The certified combination is scripts/configs/faster.env, identical to optimizations/M6.json. Experimental paths retained in the source are off and are not endorsed. Serial checkpoint loading and local metric/input-fingerprint logging apply to both implementations.
+- Numerical tier is N1, not bitwise identity. Round 1 remains NOT CONSISTENT under its fixed two-seed rule. Round 2 added two seeds per arm and passed its preregistered four-seed rule. Report both; do not change either criterion or omit failing windows. All eight 2000-step runs and all 16 final evaluations were finite. Repeated image fixtures limit quality claims to the disjoint VLM held-out check; no downstream generation benchmark was run.
+- Use independent processes, fresh caches, matching inputs and reference-candidate-reference timings. Frozen numerical records must be reverified on new hardware. The research harness is a separate artifact; docs/judge.md describes its checks.
+- Honor the shared GPU lock. Never stop another user's job. Keep data, weights, large traces, credentials, machine identifiers and private paths out of commits. Use public datasets only.

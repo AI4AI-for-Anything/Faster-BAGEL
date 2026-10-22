@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="340" viewBox="0 0 1100 340" role="img" aria-label="M6 optimization module map">
+<rect width="1100" height="340" fill="white"/>
+<g font-family="sans-serif" fill="#292122"><text x="35" y="40" font-size="25" fill="#8C0000">Faster-BAGEL: M6 module map</text>
+<g fill="#FAF5F5" stroke="#D7BDBF"><rect x="35" y="75" width="320" height="205" rx="12"/><rect x="390" y="75" width="320" height="205" rx="12"/><rect x="745" y="75" width="320" height="205" rx="12"/></g>
+<g font-size="17"><text x="55" y="110" fill="#8C0000">Model computation</text><text x="55" y="145">Compiled decoder and elementwise</text><text x="55" y="178">MoT residual ordering / FlexAttention</text><text x="55" y="211">ViT backward / asynchronous VAE</text><text x="55" y="244">Whole-document LM balancing</text>
+<text x="410" y="110" fill="#8C0000">Distributed training</text><text x="410" y="145">FSDP prefetch / gradient post-divide</text><text x="410" y="178">Selective activation recomputation</text><text x="410" y="211">Retained ViT parameter buffers</text><text x="410" y="244">Fused FP32-state AdamW</text>
+<text x="765" y="110" fill="#8C0000">Data and observability</text><text x="765" y="145">Upstream packing and RNG preserved</text><text x="765" y="178">Deferred metric synchronization</text><text x="765" y="211">Serial checkpoint load, both arms</text><text x="765" y="244">Metric and input-fingerprint records</text></g>
+<text x="35" y="315" font-size="15">All optimization switches default off. M6 is the explicit certified configuration; unselected experiments remain off.</text></g></svg>

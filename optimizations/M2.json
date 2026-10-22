@@ -1,0 +1,13 @@
+{
+  "environment": {
+    "BAGEL_OPT_NO_RECOMPUTE": "lm",
+    "BAGEL_OPT_LEAN_ACT": "1",
+    "BAGEL_OPT_MOT_PERM": "1",
+    "PYTORCH_CUDA_ALLOC_CONF": "expandable_segments:True",
+    "BAGEL_OPT_FSDP_FORWARD_PREFETCH": "1",
+    "BAGEL_OPT_COMPILE_ELEMWISE": "1",
+    "BAGEL_OPT_COMPILE_LAYER": "1",
+    "BAGEL_OPT_FSDP_POSTDIVIDE": "1",
+    "BAGEL_OPT_FUSED_ADAMW": "1"
+  }
+}
