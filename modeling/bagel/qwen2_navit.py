@@ -10,6 +10,7 @@
 # This modified file is released under the same license.
 
 
+import os
 from dataclasses import dataclass
 from functools import partial
 from typing import List, Optional, Tuple
@@ -32,6 +33,8 @@ from modeling.qwen2.modeling_qwen2 import (
 )
 
 from modeling.qwen2.configuration_qwen2 import Qwen2Config as _Qwen2Config
+from modeling.bagel import fused_ops as _fused
+from modeling.bagel import fused_layer as _fused_layer
 from modeling.cache_utils.taylorseer import (
     cal_type, taylor_cache_init, derivative_approximation, taylor_formula,
 )
@@ -41,6 +44,20 @@ torch._dynamo.config.cache_size_limit = 512
 torch._dynamo.config.accumulated_cache_size_limit = 4096
 # flex_attention = torch.compile(flex_attention) # , dynamic=True, mode='max-autotune'
 flex_attention = torch.compile(flex_attention)
+
+# Switch BAGEL_OPT_FLEX_TUNE=1: Triton block configuration of the flex-attention kernels chosen by a sweep on this GPU
+# over real packed layouts of the recipe: backward (BLOCK_M1/N1/M2/N2 32/64/64/32, 4 warps,
+# 3 stages) instead of the backend default (64/128/128/64, 8 warps, 3 stages), forward 128x64 with 8 warps instead of
+# 4. Same masks and math; the blocks set the accumulation order (numerical tier N1).
+if os.environ.get('BAGEL_OPT_FLEX_TUNE', '') == '1':
+    _FLEX_OPTS = dict(bwd_BLOCK_M1=32, bwd_BLOCK_N1=64, bwd_BLOCK_M2=64, bwd_BLOCK_N2=32, bwd_num_warps=4,
+                      bwd_num_stages=3, fwd_BLOCK_M=128, fwd_BLOCK_N=64, fwd_num_warps=8, fwd_num_stages=3)
+    _flex_compiled = flex_attention
+
+    def flex_attention(*args, **kwargs):
+        if kwargs.get('kernel_options') is None:
+            kwargs['kernel_options'] = _FLEX_OPTS
+        return _flex_compiled(*args, **kwargs)
 
 
 class Qwen2Config(_Qwen2Config):
@@ -202,6 +219,42 @@ class Qwen2Config(_Qwen2Config):
         self.qk_norm = qk_norm
         self.layer_module = layer_module
         self.freeze_und = freeze_und
+
+
+
+# Switch BAGEL_OPT_LEAN_ACT (off by default): in decoder layers whose activation checkpointing is turned off
+# (train/fsdp_utils.py BAGEL_OPT_NO_RECOMPUTE), wrap the cheap memory-heavy pieces -- every RMSNorm and the SwiGLU
+# product silu(projection) * up -- in their own non-reentrant checkpoint, so their FP32/BF16 intermediates are recomputed
+# in backward instead of kept. The recomputed values and the backward formulas are autograd's own; no RNG inside.
+_LEAN_ACT = os.environ.get('BAGEL_OPT_LEAN_ACT', '') == '1'
+# Switch BAGEL_OPT_MOT_PERM (off by default): keep the LM residual stream permuted (understanding tokens first,
+# then generation tokens, each group in its original index order) across the MoT decoder layers, so the per-expert
+# norms, projections and MLPs read contiguous slices instead of gathering and scattering through zero buffers; q, k,
+# v go back to the original order before rotary/attention, the attention output is permuted once, and the final
+# norms are un-permuted once. Same values in the same ops; only data movement changes.
+_MOT_PERM = os.environ.get('BAGEL_OPT_MOT_PERM', '') == '1'
+# Switch BAGEL_OPT_NO_SYNC=1 (off by default): the MOT_PERM coverage check without a device-to-host sync.
+_NO_SYNC = os.environ.get('BAGEL_OPT_NO_SYNC', '') == '1'
+
+
+def _lean(fn, *args):
+    return torch.utils.checkpoint.checkpoint(fn, *args, use_reentrant=False, preserve_rng_state=False)
+
+
+def _norm(module, x, lean):
+    if _fused.ENABLED:
+        return _fused.rmsnorm(x, module.weight, module.variance_epsilon)
+    return _lean(module, x) if lean else module(x)
+
+
+def _mlp(mlp, x, lean):
+    if _fused.ENABLED:
+        return mlp.down_proj(_fused.swiglu(mlp.gate_proj(x), mlp.up_proj(x)))
+    if not lean:
+        return mlp(x)
+    projection = mlp.gate_proj(x)
+    up = mlp.up_proj(x)
+    return mlp.down_proj(_lean(lambda g, u: mlp.act_fn(g) * u, projection, up))
 
 
 class NaiveCache:
@@ -412,6 +465,7 @@ class PackedAttentionMoT(Qwen2Attention):
         packed_und_token_indexes: torch.LongTensor,
         packed_gen_token_indexes: torch.LongTensor,
     ):
+        lean = getattr(self, '_bagel_lean', False)
         packed_query_states = packed_sequence.new_zeros((packed_sequence.shape[0], self.num_heads * self.head_dim))
         packed_key_states = packed_sequence.new_zeros((packed_sequence.shape[0], self.num_key_value_heads * self.head_dim))
         packed_value_states = packed_sequence.new_zeros((packed_sequence.shape[0], self.num_key_value_heads * self.head_dim))
@@ -437,15 +491,15 @@ class PackedAttentionMoT(Qwen2Attention):
         packed_query_states_ = packed_query_states.new_zeros(packed_query_states.shape)
         packed_key_states_ = packed_key_states.new_zeros(packed_key_states.shape)
 
-        packed_query_states_[packed_und_token_indexes] = self.q_norm(packed_query_states[packed_und_token_indexes])
+        packed_query_states_[packed_und_token_indexes] = _norm(self.q_norm, packed_query_states[packed_und_token_indexes], lean)
         if self.config.freeze_und:
             packed_query_states_[packed_und_token_indexes] = packed_query_states_[packed_und_token_indexes].detach()
-        packed_query_states_[packed_gen_token_indexes] = self.q_norm_moe_gen(packed_query_states[packed_gen_token_indexes])
+        packed_query_states_[packed_gen_token_indexes] = _norm(self.q_norm_moe_gen, packed_query_states[packed_gen_token_indexes], lean)
 
-        packed_key_states_[packed_und_token_indexes] = self.k_norm(packed_key_states[packed_und_token_indexes])
+        packed_key_states_[packed_und_token_indexes] = _norm(self.k_norm, packed_key_states[packed_und_token_indexes], lean)
         if self.config.freeze_und:
             packed_key_states_[packed_und_token_indexes] = packed_key_states_[packed_und_token_indexes].detach()
-        packed_key_states_[packed_gen_token_indexes] = self.k_norm_moe_gen(packed_key_states[packed_gen_token_indexes])
+        packed_key_states_[packed_gen_token_indexes] = _norm(self.k_norm_moe_gen, packed_key_states[packed_gen_token_indexes], lean)
 
         packed_cos, packed_sin = packed_position_embeddings
         packed_query_states_, packed_key_states_ = apply_rotary_pos_emb(
@@ -495,6 +549,29 @@ class PackedAttentionMoT(Qwen2Attention):
         packed_attn_output_[packed_gen_token_indexes] = self.o_proj_moe_gen(packed_attn_output[packed_gen_token_indexes])
 
         return packed_attn_output_
+
+    def forward_train_perm(self, h_und, h_gen, sample_lens, attention_mask, packed_position_embeddings, mot_perm, lean):
+        n_und, perm, inv_perm = mot_perm
+        q = torch.cat([self.q_proj(h_und), self.q_proj_moe_gen(h_gen)]).view(-1, self.num_heads, self.head_dim)
+        k = torch.cat([self.k_proj(h_und), self.k_proj_moe_gen(h_gen)]).view(-1, self.num_key_value_heads, self.head_dim)
+        v = torch.cat([self.v_proj(h_und), self.v_proj_moe_gen(h_gen)]).view(-1, self.num_key_value_heads, self.head_dim)
+        q = torch.cat([_norm(self.q_norm, q[:n_und], lean), _norm(self.q_norm_moe_gen, q[n_und:], lean)])[inv_perm]
+        k = torch.cat([_norm(self.k_norm, k[:n_und], lean), _norm(self.k_norm_moe_gen, k[n_und:], lean)])[inv_perm]
+        v = v[inv_perm]
+        packed_cos, packed_sin = packed_position_embeddings
+        if _fused.ENABLED:
+            q, k = _fused.rope(q, k, packed_cos, packed_sin)
+        else:
+            q, k = apply_rotary_pos_emb(q, k, packed_cos, packed_sin, unsqueeze_dim=1)
+        pad_size = sum(sample_lens) - q.shape[0]
+        q = pad_sequence(q.permute(1, 0, 2), pad_size)
+        k = pad_sequence(k.permute(1, 0, 2), pad_size)
+        v = pad_sequence(v.permute(1, 0, 2), pad_size)
+        out = flex_attention(q.unsqueeze(0), k.unsqueeze(0), v.unsqueeze(0), enable_gqa=True, block_mask=attention_mask)
+        end_index = out.shape[2] - pad_size
+        out = out[0, :, :end_index, :]
+        out = out.transpose(0, 1).reshape(-1, self.num_heads * self.head_dim)[perm]
+        return torch.cat([self.o_proj(out[:n_und]), self.o_proj_moe_gen(out[n_und:])])
 
     def forward_inference(
         self,
@@ -718,12 +795,29 @@ class Qwen2MoTDecoderLayer(nn.Module):
         packed_position_embeddings: Tuple[torch.Tensor, torch.Tensor],
         packed_und_token_indexes: torch.LongTensor,
         packed_gen_token_indexes: torch.LongTensor,
+        mot_perm=None,
     ) -> torch.Tensor:
 
+        lean = _LEAN_ACT and getattr(self, '_bagel_skip_recompute', False) and torch.is_grad_enabled()
+        if mot_perm is not None and _fused_layer.ENABLED and torch.is_grad_enabled():
+            return _fused_layer.layer_forward(self, packed_sequence, sample_lens, attention_mask,
+                                              packed_position_embeddings, mot_perm, flex_attention)
+        if mot_perm is not None:
+            n_und = mot_perm[0]
+            x = packed_sequence
+            attn = self.self_attn.forward_train_perm(
+                _norm(self.input_layernorm, x[:n_und], lean), _norm(self.input_layernorm_moe_gen, x[n_und:], lean),
+                sample_lens, attention_mask, packed_position_embeddings, mot_perm, lean)
+            x = x + attn
+            mlp = torch.cat([
+                _mlp(self.mlp, _norm(self.post_attention_layernorm, x[:n_und], lean), lean),
+                _mlp(self.mlp_moe_gen, _norm(self.post_attention_layernorm_moe_gen, x[n_und:], lean), lean)])
+            return x + mlp
+        self.self_attn._bagel_lean = lean
         residual = packed_sequence
         packed_sequence_ = packed_sequence.new_zeros(packed_sequence.shape)
-        packed_sequence_[packed_und_token_indexes] = self.input_layernorm(packed_sequence[packed_und_token_indexes])
-        packed_sequence_[packed_gen_token_indexes] = self.input_layernorm_moe_gen(packed_sequence[packed_gen_token_indexes])
+        packed_sequence_[packed_und_token_indexes] = _norm(self.input_layernorm, packed_sequence[packed_und_token_indexes], lean)
+        packed_sequence_[packed_gen_token_indexes] = _norm(self.input_layernorm_moe_gen, packed_sequence[packed_gen_token_indexes], lean)
 
         # Self Attention
         packed_sequence_ = self.self_attn(
@@ -741,14 +835,14 @@ class Qwen2MoTDecoderLayer(nn.Module):
         # Fully Connected
         residual = packed_sequence
         packed_sequence_ = packed_sequence.new_zeros(packed_sequence.shape)
-        packed_sequence_[packed_und_token_indexes] = self.mlp(
-            self.post_attention_layernorm(packed_sequence[packed_und_token_indexes])
+        packed_sequence_[packed_und_token_indexes] = _mlp(
+            self.mlp, _norm(self.post_attention_layernorm, packed_sequence[packed_und_token_indexes], lean), lean
         )
         if self.freeze_und:
             packed_sequence_[packed_und_token_indexes] = packed_sequence_[packed_und_token_indexes].detach()
     
-        packed_sequence_[packed_gen_token_indexes] = self.mlp_moe_gen(
-            self.post_attention_layernorm_moe_gen(packed_sequence[packed_gen_token_indexes])
+        packed_sequence_[packed_gen_token_indexes] = _mlp(
+            self.mlp_moe_gen, _norm(self.post_attention_layernorm_moe_gen, packed_sequence[packed_gen_token_indexes], lean), lean
         )
         packed_sequence = residual + packed_sequence_
 
@@ -995,6 +1089,39 @@ class Qwen2Model(Qwen2PreTrainedModel):
                 packed_und_token_indexes=packed_und_token_indexes,
                 packed_gen_token_indexes=packed_gen_token_indexes,
             )
+
+        if (_MOT_PERM and self.use_moe and not self.config.freeze_und and not isinstance(attention_mask, List)
+                and getattr(self.config, 'layer_module', '') == 'Qwen2MoTDecoderLayer'):
+            n = packed_sequence.shape[0]
+            n_und = packed_und_token_indexes.numel()
+            if n_und + packed_gen_token_indexes.numel() == n:
+                perm = torch.cat([packed_und_token_indexes, packed_gen_token_indexes])
+                covered = torch.zeros(n, dtype=torch.bool, device=perm.device)
+                if _NO_SYNC:
+                    covered.index_fill_(0, perm, True)   # same as covered[perm] = True, without a host->device copy
+                else:
+                    covered[perm] = True
+                if _NO_SYNC:
+                    # PackedDataset puts every position of the packed sequence into exactly one of the text, ViT and
+                    # VAE index lists, so und + gen is a permutation by construction; check it without a host sync.
+                    torch._assert_async(covered.all())
+                if _NO_SYNC or bool(covered.all()):
+                    inv_perm = torch.empty_like(perm)
+                    inv_perm[perm] = torch.arange(n, device=perm.device, dtype=perm.dtype)
+                    x = packed_sequence[perm]
+                    from .mlp_balance import make_plan
+                    attention_mask._bagel_mlp_plan = (
+                        make_plan(n_und, n - n_und, x.device) if _fused_layer.ENABLED else None)
+                    for decoder_layer in self.layers:
+                        x = decoder_layer(
+                            packed_sequence=x,
+                            sample_lens=sample_lens,
+                            attention_mask=attention_mask,
+                            packed_position_embeddings=packed_position_embeddings,
+                            mot_perm=(n_und, perm, inv_perm),
+                            **extra_inputs
+                        )
+                    return torch.cat([_norm(self.norm, x[:n_und], False), _norm(self.norm_moe_gen, x[n_und:], False)])[inv_perm]
 
         for decoder_layer in self.layers:
             packed_sequence = decoder_layer(

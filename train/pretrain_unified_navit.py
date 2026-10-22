@@ -2,6 +2,8 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import functools
+import json
+import hashlib
 import gc
 import os
 import wandb
@@ -559,9 +561,14 @@ def main():
         num_shard=training_args.num_shard,
     )
     ema_model = deepcopy(model)
-    model, ema_model = FSDPCheckpoint.try_load_ckpt(
-        resume_from, logger, model, ema_model, resume_from_ema=finetune_from_ema
-    )
+    # host-fit: load the checkpoint one rank at a time (keeps host-memory peak below the container limit).
+    for _load_rank in range(dist.get_world_size()):
+        if dist.get_rank() == _load_rank:
+            model, ema_model = FSDPCheckpoint.try_load_ckpt(
+                resume_from, logger, model, ema_model, resume_from_ema=finetune_from_ema
+            )
+            gc.collect()
+        dist.barrier()
     ema_model = fsdp_ema_setup(ema_model, fsdp_config)
     fsdp_model = fsdp_wrapper(model, fsdp_config)
     apply_activation_checkpointing(
@@ -668,22 +675,46 @@ def main():
         if curr_step >= training_args.total_steps:
             logger.info(f"Reached total_steps={training_args.total_steps}, stopping training.")
             break
+        if curr_step < 6:
+            pair_cpu = data.to_dict()
+            pair_hash = hashlib.sha256()
+            for pair_k in ['packed_text_ids', 'packed_label_ids', 'padded_images', 'packed_vit_tokens', 'packed_timesteps']:
+                pair_t = pair_cpu.get(pair_k)
+                if torch.is_tensor(pair_t):
+                    pair_hash.update(pair_t.contiguous().numpy().tobytes())
+            with open(os.path.join(training_args.results_dir, f'input_rank{dist.get_rank()}.jsonl'), 'a') as pair_f:
+                pair_f.write(json.dumps(dict(step=curr_step, sha256=pair_hash.hexdigest(), sequence_length=pair_cpu['sequence_length'])) + '\n')
+            del pair_cpu, pair_hash
+        from train import async_log as _alog
+        _defer_sync = _alog.ENABLED
+        if _defer_sync:
+            _alog.step_start(device)
         data = data.cuda(device).to_dict()
         data_indexes = data.pop('batch_data_indexes', None)
         ce_loss_weights = data.pop('ce_loss_weights', None)       
-        tokens_tensor = torch.tensor(float(data['sequence_length']), device=device)
+        tokens_tensor = _alog.dev_scalar(float(data['sequence_length']), device)
         dist.all_reduce(tokens_tensor, op=dist.ReduceOp.SUM)
-        token_window += tokens_tensor.item()
+        sample_square = None
+        if not _defer_sync:
+            token_window += tokens_tensor.item()
         if data['sample_lens']:
-            sample_lens_tensor = torch.tensor(data['sample_lens'], dtype=torch.float32, device=device)
+            sample_lens_tensor = _alog.dev_scalar(data['sample_lens'], device, dtype=torch.float32)
             sample_square = torch.dot(sample_lens_tensor, sample_lens_tensor)
             dist.all_reduce(sample_square, op=dist.ReduceOp.SUM)
-            seqlen_square_window += sample_square.item()
+            if not _defer_sync:
+                seqlen_square_window += sample_square.item()
+        if _defer_sync:
+            _alog.add_window(tokens_tensor, sample_square)
 
         with torch.amp.autocast("cuda", enabled=True, dtype=torch.bfloat16):
             if training_args.visual_gen:
                 with torch.no_grad():
-                    data['padded_latent'] = vae_model.encode(data.pop('padded_images'))
+                    if os.environ.get('BAGEL_OPT_ASYNC_VAE', '') == '1':
+                        from modeling.autoencoder import encode_async
+                        data['padded_latent'], data['padded_latent_ready'] = encode_async(
+                            vae_model, data.pop('padded_images'), fsdp_model)
+                    else:
+                        data['padded_latent'] = vae_model.encode(data.pop('padded_images'))
             try:
                 loss_dict = fsdp_model(**data)
             except RuntimeError as e:
@@ -695,7 +726,7 @@ def main():
         loss = 0
         ce = loss_dict["ce"]
         if ce is not None:
-            total_ce_tokens = torch.tensor(len(data['ce_loss_indexes']), device=device)
+            total_ce_tokens = _alog.dev_scalar(len(data['ce_loss_indexes']), device)
             dist.all_reduce(total_ce_tokens, op=dist.ReduceOp.SUM)
             if training_args.ce_loss_reweighting:
                 ce = ce * ce_loss_weights
@@ -713,7 +744,7 @@ def main():
 
         if training_args.visual_gen:
             mse = loss_dict["mse"]
-            total_mse_tokens = torch.tensor(len(data['mse_loss_indexes']), device=device)
+            total_mse_tokens = _alog.dev_scalar(len(data['mse_loss_indexes']), device)
             dist.all_reduce(total_mse_tokens, op=dist.ReduceOp.SUM)
             mse = mse.mean(dim=-1).sum() * dist.get_world_size() / total_mse_tokens
             loss_dict["mse"] = mse.detach()
@@ -734,7 +765,12 @@ def main():
             optimizer.zero_grad()
         
         # Log loss values:
-        if curr_step % training_args.log_every == 0:
+        if _defer_sync and curr_step % training_args.log_every == 0:
+            _alog.stage(curr_step, loss_dict, len(data['sample_lens']), total_mse_tokens, total_ce_tokens, total_norm,
+                        optimizer.param_groups[0]['lr'], device,
+                        dict(training_args=training_args, logger=logger, wandb=wandb,
+                             dense_token_factor=dense_token_factor, attn_factor=attn_factor))
+        elif curr_step % training_args.log_every == 0:
             total_samples = torch.tensor(len(data['sample_lens']), device=device)
             dist.all_reduce(total_samples, op=dist.ReduceOp.SUM)
 
@@ -782,6 +818,9 @@ def main():
 
             if dist.get_rank() == 0:
                 wandb.log(wandb_log, step=curr_step)
+                with open(os.path.join(training_args.results_dir, 'metrics.jsonl'), 'a') as pair_f:
+                    json.dump(dict(step=curr_step, elapsed_sec=elapsed, **{k: float(v) for k,v in wandb_log.items()}), pair_f)
+                    pair_f.write('\n')
             start_time = time()
             token_window = 0.0
             seqlen_square_window = 0.0
@@ -794,6 +833,9 @@ def main():
             data_status[item['dataset_name']][item['worker_id']] = item['data_indexes']
 
         if curr_step > 0 and curr_step % training_args.save_every == 0:
+            if _defer_sync:
+                _alog.flush(dict(training_args=training_args, logger=logger, wandb=wandb,
+                                 dense_token_factor=dense_token_factor, attn_factor=attn_factor))
             # Clear caches and ensure all CUDA operations complete before checkpoint
             torch.cuda.empty_cache()
             torch.cuda.synchronize()

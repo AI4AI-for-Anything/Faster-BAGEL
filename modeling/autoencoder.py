@@ -358,3 +358,33 @@ def load_ae(local_path: str) -> AutoEncoder:
         missing, unexpected = ae.load_state_dict(sd, strict=False, assign=True)
         print_load_warning(missing, unexpected)
     return ae, ae_params
+
+
+_VAE_STREAMS = {}
+
+
+def encode_async(vae_model, images, fsdp_model=None):
+    """Switch BAGEL_OPT_ASYNC_VAE (used by the training loop): run the frozen VAE encode on a side CUDA stream so it
+    overlaps the start of the model forward (the ViT does not need the latents); returns (latents, ready event).
+    The forward waits for the event before it first touches the latents. The encoder's noise draw happens in the same
+    host order as before, so the latents are the same numbers.
+    The root FSDP unit casts floating-point forward inputs to its mixed-precision param dtype when the forward is
+    entered (MixedPrecision.cast_root_forward_inputs) -- on the main stream, before the forward reaches the wait -- so
+    that same cast is applied here, on the side stream, after the encode; FSDP then finds the latents already in that
+    dtype and does not touch them."""
+    main = torch.cuda.current_stream(images.device)
+    side = _VAE_STREAMS.get(images.device)
+    if side is None:
+        side = _VAE_STREAMS[images.device] = torch.cuda.Stream(images.device)
+    side.wait_stream(main)
+    with torch.cuda.stream(side):
+        latents = vae_model.encode(images)
+        mp = getattr(fsdp_model, 'mixed_precision', None)
+        if (mp is not None and mp.cast_root_forward_inputs and mp.param_dtype is not None and fsdp_model.training
+                and latents.is_floating_point() and latents.dtype != mp.param_dtype):
+            latents = latents.to(mp.param_dtype)
+    images.record_stream(side)
+    latents.record_stream(main)
+    ready = torch.cuda.Event()
+    ready.record(side)
+    return latents, ready

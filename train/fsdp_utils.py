@@ -45,8 +45,163 @@ class FSDPConfig:
         self.num_shard = num_shard
 
 
+def _effective_strategy(fsdp_config):
+    """Switch BAGEL_OPT_FSDP_FLAT_HYBRID=1: HYBRID_SHARD with a single replica (num_replicate 1) is the same 8-way
+    sharding as FULL_SHARD over the same ranks; run it as FULL_SHARD to skip HSDP's extra all-reduce over the one-rank
+    replica group and its stream hop after every reduce-scatter. The fsdp_config (checkpoint naming) is unchanged."""
+    if (os.environ.get('BAGEL_OPT_FSDP_FLAT_HYBRID', '') == '1' and fsdp_config.sharding_strategy == 'HYBRID_SHARD'
+            and fsdp_config.num_replicate == 1):
+        return 'FULL_SHARD'
+    return fsdp_config.sharding_strategy
+
+
+def _vit_keep_unsharded(fsdp_model):
+    """Switch BAGEL_OPT_VIT_KEEP_UNSHARDED=1: the SigLIP encoder-layer units keep their (small, ~30 MB BF16 each)
+    unsharded parameters from the forward until their backward (FSDP's ZeRO-2 handle behaviour for these units only)
+    instead of resharding after the forward and all-gathering again in the backward; the same values are gathered
+    from the same shards, gradients are reduce-scattered as before."""
+    if os.environ.get('BAGEL_OPT_VIT_NO_RATELIMIT', '') == '1':
+        # Switch BAGEL_OPT_VIT_NO_RATELIMIT=1: FSDP's all-gather rate limiter (limit_all_gathers) makes the CPU wait
+        # on the free event of the unit two steps back whenever a unit unshards; for the 27 small SigLIP layer units
+        # (30 MB each) that keeps the CPU in lockstep with the GPU, so the CPU-bound ViT backward cannot be queued
+        # while the GPU still runs the last language-model layers. Off for these units only; scheduling only.
+        # FSDP requires one value for all units at its lazy init (first forward), so it is changed afterwards, from
+        # the first SigLIP layer forward.
+        vit_units = [m for m in FSDP.fsdp_modules(fsdp_model)
+                     if m._handle is not None and isinstance(m.module, SiglipEncoderLayer)]
+
+        def _unlimit(module, args):
+            if vit_units and vit_units[0].limit_all_gathers:
+                for m in vit_units:
+                    m.limit_all_gathers = False
+        for m in vit_units:
+            m.module.register_forward_pre_hook(_unlimit)
+    if os.environ.get('BAGEL_OPT_VIT_KEEP_UNSHARDED', '') != '1':
+        return fsdp_model
+    from torch.distributed.fsdp._flat_param import HandleShardingStrategy as H
+    no_reshard = {H.HYBRID_SHARD: H._HYBRID_SHARD_ZERO2, H.FULL_SHARD: H.SHARD_GRAD_OP}
+    for m in FSDP.fsdp_modules(fsdp_model):
+        handle = m._handle
+        if handle is not None and isinstance(m.module, SiglipEncoderLayer) and handle._sharding_strategy in no_reshard:
+            handle._sharding_strategy = no_reshard[handle._sharding_strategy]
+    return fsdp_model
+
+
+def _lm_prefetch2(fsdp_model):
+    """Switch BAGEL_OPT_LM_PREFETCH2=1 (needs BAGEL_OPT_FSDP_FORWARD_PREFETCH=1): in the forward, each language-model
+    decoder-layer unit also starts the all-gather of the unit two layers ahead (FSDP's forward prefetch starts the
+    next one), so a ~0.9 GB all-gather that runs slower than one layer of compute (waiting for the other ranks) gets
+    two layers to finish. Runs FSDP's own `_unshard` for that handle and marks it prefetched, as FSDP's prefetch
+    does; same all-gathers and values. Only while the current unit is in its forward (not in a recompute)."""
+    if os.environ.get('BAGEL_OPT_LM_PREFETCH2', '') != '1' or not any(p.requires_grad for p in fsdp_model.parameters()):
+        return fsdp_model
+    from torch.distributed.fsdp._flat_param import HandleTrainingState
+    from torch.distributed.fsdp._runtime_utils import _unshard
+    units = [m for m in FSDP.fsdp_modules(fsdp_model)
+             if m._handle is not None and isinstance(m.module, (Qwen2MoTDecoderLayer, Qwen2DecoderLayer, Qwen2MoEDecoderLayer))]
+
+    def make_hook(i):
+        def hook(module, args):
+            if not torch.is_grad_enabled() or i + 2 >= len(units):
+                return
+            if units[i]._handle._training_state != HandleTrainingState.FORWARD:
+                return
+            t = units[i + 2]
+            h = t._handle
+            if h._prefetched or not h._needs_pre_forward_unshard:
+                return
+            prev = h._training_state
+            h._training_state = HandleTrainingState.FORWARD
+            _unshard(t, h, t._unshard_stream, t._pre_unshard_stream)
+            h._training_state = prev
+            h._prefetched = True
+        return hook
+    for i, u in enumerate(units):
+        u.module.register_forward_pre_hook(make_hook(i))
+    return fsdp_model
+
+
+def _lm_keep_unsharded(fsdp_model):
+    """Retain the last N decoder-layer BF16 buffers until backward.
+
+    BAGEL_OPT_LM_KEEP_UNSHARDED=N (default 0) uses FSDP's existing ZeRO-2
+    handle behavior, as the ViT retention switch does. The FP32 parameters,
+    flat layout, reduction, optimizer and checkpoint format are unchanged.
+    This trades one full BF16 layer buffer per selected unit for eliminating
+    its backward all-gather. Choose the final units so backward frees their
+    buffers first. No activations or computed outputs persist across steps.
+    """
+    count = int(os.environ.get('BAGEL_OPT_LM_KEEP_UNSHARDED', '0'))
+    if count < 0:
+        raise ValueError('BAGEL_OPT_LM_KEEP_UNSHARDED must be nonnegative')
+    if count == 0:
+        return fsdp_model
+    from torch.distributed.fsdp._flat_param import HandleShardingStrategy as H
+    no_reshard = {H.HYBRID_SHARD: H._HYBRID_SHARD_ZERO2, H.FULL_SHARD: H.SHARD_GRAD_OP}
+    units = [m for m in FSDP.fsdp_modules(fsdp_model)
+             if m._handle is not None
+             and isinstance(m.module, (Qwen2MoTDecoderLayer, Qwen2DecoderLayer, Qwen2MoEDecoderLayer))]
+    for m in units[-count:]:
+        handle = m._handle
+        if handle.flat_param.requires_grad and handle._sharding_strategy in no_reshard:
+            handle._sharding_strategy = no_reshard[handle._sharding_strategy]
+    return fsdp_model
+
+
+def _rs_own_comm(fsdp_model):
+    """Switch BAGEL_OPT_RS_OWN_COMM=1: gradient reduce-scatters go through a second NCCL communicator over the same
+    ranks. FSDP1 issues the reduce-scatter of a unit and the backward prefetch all-gather of the next unit on one
+    process group, and ProcessGroupNCCL runs a group's collectives in issue order on one stream, so the prefetch waits
+    for the whole reduce-scatter; on its own communicator the all-gather can run alongside it. Same ranks, same
+    collective, same tensors (a communicator over the same ranks builds the same rings, so the sums are unchanged)."""
+    if os.environ.get('BAGEL_OPT_RS_OWN_COMM', '') != '1' or not any(p.requires_grad for p in fsdp_model.parameters()):
+        return fsdp_model
+    import torch.distributed.fsdp._runtime_utils as ru
+    groups = _RS_GROUPS
+    for m in FSDP.fsdp_modules(fsdp_model):
+        pg = m.process_group
+        if pg is not None and pg not in groups:
+            groups[pg] = dist.new_group(ranks=dist.get_process_group_ranks(pg))
+    if getattr(ru._reduce_grad, '_bagel_rs_own_comm', False):
+        return fsdp_model
+    orig = ru._reduce_grad
+
+    def _reduce_grad(state, handle):
+        pg = state.process_group
+        alt = groups.get(pg)
+        if alt is None or handle._use_fake_reduce:
+            return orig(state, handle)
+        state.process_group = alt
+        try:
+            return orig(state, handle)
+        finally:
+            state.process_group = pg
+    _reduce_grad._bagel_rs_own_comm = True
+    ru._reduce_grad = _reduce_grad
+    return fsdp_model
+
+
+_RS_GROUPS = {}
+
+
+def _fold_grad_divide(fsdp_model):
+    """Switch BAGEL_OPT_FSDP_POSTDIVIDE=1: FSDP divides each unsharded gradient by 4 before the reduce-scatter and the
+    shard by 2 after it; both are powers of two, so dividing only the (8x smaller) shard by 8 after the reduce-scatter
+    gives the same values (barring subnormals) and skips one pass over every unsharded gradient."""
+    if os.environ.get('BAGEL_OPT_FSDP_POSTDIVIDE', '') != '1':
+        return fsdp_model
+    for m in FSDP.fsdp_modules(fsdp_model):
+        total = m._gradient_predivide_factor * m._gradient_postdivide_factor
+        m._gradient_predivide_factor = 1.0
+        m._gradient_postdivide_factor = total
+    return fsdp_model
+
+
 def fsdp_wrapper(original_model, fsdp_config, ignored_modules=[]):
-    if fsdp_config.sharding_strategy == 'HYBRID_SHARD':
+    from train.cpu_affinity import configure_cpu_affinity
+    configure_cpu_affinity()
+    strategy = _effective_strategy(fsdp_config)
+    if strategy == 'HYBRID_SHARD':
         device_mesh = init_device_mesh(
             "cuda", 
             mesh_shape=(fsdp_config.num_replicate, fsdp_config.num_shard),
@@ -54,7 +209,7 @@ def fsdp_wrapper(original_model, fsdp_config, ignored_modules=[]):
         )
     else:
         device_mesh = None
-    return FSDP(
+    wrapped = _lm_keep_unsharded(_lm_prefetch2(_rs_own_comm(_vit_keep_unsharded(_fold_grad_divide(FSDP(
         original_model,
         auto_wrap_policy=functools.partial(
             transformer_auto_wrap_policy,
@@ -76,11 +231,26 @@ def fsdp_wrapper(original_model, fsdp_config, ignored_modules=[]):
             buffer_dtype=torch.bfloat16,
         ),
         device_id=dist.get_rank() % torch.cuda.device_count(),
-        sharding_strategy=ShardingStrategy[fsdp_config.sharding_strategy],
+        sharding_strategy=ShardingStrategy[strategy],
         backward_prefetch=BackwardPrefetch[fsdp_config.backward_prefetch],
         cpu_offload=CPUOffload(offload_params=fsdp_config.cpu_offload),
         device_mesh=device_mesh,
-    )
+        **_fsdp_schedule_kwargs(),
+    ))))))
+    from train.vit_reduce_batch import install
+    return install(wrapped)
+
+
+def _fsdp_schedule_kwargs():
+    """Switches BAGEL_OPT_FSDP_FORWARD_PREFETCH=1 and BAGEL_OPT_FSDP_LIMIT_ALL_GATHERS=0 (off = FSDP defaults):
+    collective scheduling only (when the next unit's all-gather is issued, and whether the CPU is throttled to two
+    in-flight all-gathers); the collectives and the math are unchanged."""
+    kw = {}
+    if os.environ.get('BAGEL_OPT_FSDP_FORWARD_PREFETCH', '') == '1':
+        kw['forward_prefetch'] = True
+    if os.environ.get('BAGEL_OPT_FSDP_LIMIT_ALL_GATHERS', '') == '0':
+        kw['limit_all_gathers'] = False
+    return kw
 
 
 class FSDPCheckpoint:
@@ -233,6 +403,54 @@ class FSDPCheckpoint:
         return optimizer, scheduler, train_steps, data_status
 
 
+# Switch BAGEL_OPT_NO_RECOMPUTE (off by default): comma-separated groups whose activation checkpointing is turned
+# into a plain call -- the checkpoint wrapper module stays in place (same module tree, same FSDP flat parameters and
+# names), only its forward stops discarding activations and recomputing them in backward. Groups: lm (all LM decoder
+# layers), lm:N (LM decoder layers 0..N-1), vit (SigLIP encoder layers), connector, all. The recomputed forward is
+# the same computation as the first one (no RNG is drawn inside these layers), so results are unchanged.
+_NO_RECOMPUTE = [x.strip() for x in os.environ.get('BAGEL_OPT_NO_RECOMPUTE', '').split(',') if x.strip()]
+
+
+def _skip_recompute(module):
+    for spec in _NO_RECOMPUTE:
+        if spec == 'all':
+            return True
+        if spec.startswith('lm') and isinstance(module, (Qwen2DecoderLayer, Qwen2MoEDecoderLayer, Qwen2MoTDecoderLayer)):
+            if spec == 'lm' or module.self_attn.layer_idx < int(spec.split(':')[1]):
+                return True
+        if spec == 'vit' and isinstance(module, SiglipEncoderLayer):
+            return True
+        if spec == 'connector' and isinstance(module, MLPconnector):
+            return True
+    return False
+
+
+if _NO_RECOMPUTE:
+    from torch.distributed.algorithms._checkpoint import checkpoint_wrapper as _cw
+    _orig_checkpoint_wrapper_forward = _cw.CheckpointWrapper.forward
+
+    def _checkpoint_wrapper_forward(self, *args, **kwargs):
+        inner = self._checkpoint_wrapped_module
+        if getattr(inner, '_bagel_skip_recompute', False):
+            return inner(*args, **kwargs)
+        return _orig_checkpoint_wrapper_forward(self, *args, **kwargs)
+    _cw.CheckpointWrapper.forward = _checkpoint_wrapper_forward
+
+
+# Switch BAGEL_OPT_FUSED_ADAMW=1 (off by default): torch.optim.AdamW constructed without an explicit implementation
+# choice uses PyTorch's fused CUDA kernel (fused=True) instead of the foreach path: same AdamW update (lr, betas,
+# eps, weight decay, bias correction) and FP32 state, one kernel per parameter group instead of ~10 foreach passes.
+# Numerical tier N1 (the fused kernel orders the FP32 arithmetic differently).
+if os.environ.get('BAGEL_OPT_FUSED_ADAMW', '') == '1':
+    _orig_adamw_init = torch.optim.AdamW.__init__
+
+    def _adamw_init(self, params, *args, **kwargs):
+        if kwargs.get('fused') is None and kwargs.get('foreach') is None:
+            kwargs['fused'] = True
+        _orig_adamw_init(self, params, *args, **kwargs)
+    torch.optim.AdamW.__init__ = _adamw_init
+
+
 def grad_checkpoint_check_fn(module):
     module_options = (
         Qwen2DecoderLayer, 
@@ -241,7 +459,10 @@ def grad_checkpoint_check_fn(module):
         Qwen2MoEDecoderLayer, 
         Qwen2MoTDecoderLayer
     )
-    return isinstance(module, module_options)
+    wrap = isinstance(module, module_options)
+    if wrap and _skip_recompute(module):
+        module._bagel_skip_recompute = True
+    return wrap
 
 
 def fsdp_ema_setup(ema_model, fsdp_config, ignored_modules=[]):

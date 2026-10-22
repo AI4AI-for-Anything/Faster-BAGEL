@@ -4,6 +4,7 @@
 import copy
 from typing import List, Tuple, Optional, Dict, Any
 
+import os
 import torch
 import torch.nn.functional as F
 from torch import nn
@@ -22,6 +23,21 @@ from .modeling_utils import MLPconnector, TimestepEmbedder, PositionEmbedding
 from modeling.cache_utils.taylorseer import cache_init
 
 from tqdm import tqdm
+
+
+_GC_FROZEN = []
+
+
+def _maybe_freeze_gc():
+    """Switch BAGEL_OPT_GC_FREEZE=1 (off by default): at the first training forward, move every object that exists
+    after setup (model, optimizer, compiled-code caches, ...) into CPython's permanent generation, so the periodic
+    full garbage collections stop rescanning them (they showed up as 300-550 ms CPU stalls of the forward on the same
+    steps on every rank). No effect on any tensor value."""
+    if not _GC_FROZEN and os.environ.get('BAGEL_OPT_GC_FREEZE', '') == '1':
+        import gc
+        gc.collect()
+        gc.freeze()
+        _GC_FROZEN.append(True)
 
 
 class BagelConfig(PretrainedConfig):
@@ -122,6 +138,8 @@ class Bagel(PreTrainedModel):
         packed_vae_token_indexes: Optional[torch.LongTensor] = None,
         packed_timesteps: Optional[torch.LongTensor] = None,
         mse_loss_indexes: Optional[torch.BoolTensor] = None,
+        vit_max_seqlen: Optional[int] = None,
+        padded_latent_ready=None,
     ) -> torch.Tensor:
         """
         Args:
@@ -148,6 +166,7 @@ class Bagel(PreTrainedModel):
             packed_timesteps: 1-D float tensor, flow timesteps. 0 indicates use clean image.
             mse_loss_indexes: 1-D bool tensor, where to compute mse loss.
         """
+        _maybe_freeze_gc()
         packed_text_embedding = self.language_model.model.embed_tokens(packed_text_ids)
         packed_sequence = packed_text_embedding.new_zeros(size=(sequence_length, self.hidden_size))
         packed_sequence[packed_text_indexes] = packed_text_embedding
@@ -159,6 +178,13 @@ class Bagel(PreTrainedModel):
                 sparse_mask, B=1, H=self.num_heads, Q_LEN=seqlen, KV_LEN=seqlen, 
                 device=packed_text_embedding.device, BLOCK_SIZE=128, _compile=True
             )
+            from .segment_flash import make_plan
+            block_mask._bagel_segment_plan = make_plan(
+                sample_lens, split_lens, attn_modes, packed_text_embedding.device,
+                valid_length=sequence_length)
+            from .flex_trim import prepare as prepare_trim
+            block_mask._bagel_trimmed_mask = prepare_trim(
+                block_mask, sample_lens, split_lens, attn_modes, sequence_length)
             attention_mask = block_mask
         else:
             attention_mask = nested_attention_masks
@@ -166,7 +192,7 @@ class Bagel(PreTrainedModel):
         if self.config.visual_und:
             cu_seqlens = torch.nn.functional.pad(torch.cumsum(vit_token_seqlens, dim=0), (1, 0))
             cu_seqlens = cu_seqlens.to(torch.int32)
-            max_seqlen = torch.max(vit_token_seqlens).item()
+            max_seqlen = vit_max_seqlen if vit_max_seqlen is not None else torch.max(vit_token_seqlens).item()
             packed_vit_token_embed = self.vit_model(
                 packed_pixel_values=packed_vit_tokens, 
                 packed_flattened_position_ids=packed_vit_position_ids,
@@ -179,6 +205,8 @@ class Bagel(PreTrainedModel):
             packed_sequence[packed_vit_token_indexes] = packed_vit_token_embed
 
         if self.config.visual_gen:
+            if padded_latent_ready is not None:
+                torch.cuda.current_stream().wait_event(padded_latent_ready)
             p = self.latent_patch_size
             packed_latent = []
             for latent, (h, w) in zip(padded_latent, patchified_vae_latent_shapes):
@@ -206,13 +234,18 @@ class Bagel(PreTrainedModel):
                 packed_gen_token_indexes=packed_vae_token_indexes,
             )
 
-        last_hidden_state = self.language_model(
-            packed_sequence=packed_sequence,
-            sample_lens=sample_lens,
-            attention_mask=attention_mask,
-            packed_position_ids=packed_position_ids,
-            **extra_inputs,
-        )
+        from .lm_balance import try_forward as balance_lm
+        last_hidden_state = balance_lm(
+            self.language_model, packed_sequence, sample_lens, split_lens,
+            attn_modes, attention_mask, packed_position_ids, extra_inputs)
+        if last_hidden_state is None:
+            last_hidden_state = self.language_model(
+                packed_sequence=packed_sequence,
+                sample_lens=sample_lens,
+                attention_mask=attention_mask,
+                packed_position_ids=packed_position_ids,
+                **extra_inputs,
+            )
 
         mse = None
         if self.config.visual_gen:

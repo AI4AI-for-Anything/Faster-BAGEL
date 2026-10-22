@@ -6,6 +6,7 @@ import random
 import json
 
 import numpy as np
+import os
 import torch
 
 from .data_utils import (
@@ -545,32 +546,37 @@ class SimpleCustomBatch:
         return self
 
     def cuda(self, device):
-        self.packed_text_ids = self.packed_text_ids.to(device)
-        self.packed_text_indexes = self.packed_text_indexes.to(device)
-        self.packed_position_ids = self.packed_position_ids.to(device)
+        from train.async_log import to_device as _to
+        if os.environ.get('BAGEL_OPT_NO_SYNC', '') == '1' and hasattr(self, 'vit_token_seqlens'):
+            # the longest ViT sequence, read from the CPU copy before it moves (Bagel.forward would otherwise read it
+            # back from the GPU with a host sync); to_dict() passes it on only after this point
+            self.vit_max_seqlen_cpu = int(self.vit_token_seqlens.max())
+        self.packed_text_ids = _to(self.packed_text_ids, device)
+        self.packed_text_indexes = _to(self.packed_text_indexes, device)
+        self.packed_position_ids = _to(self.packed_position_ids, device)
 
         if not self.use_flex:
-            self.nested_attention_masks = [item.to(device) for item in self.nested_attention_masks]
+            self.nested_attention_masks = [_to(item, device) for item in self.nested_attention_masks]
 
         if hasattr(self, 'padded_images'):
-            self.padded_images = self.padded_images.to(device)
-            self.packed_vae_token_indexes = self.packed_vae_token_indexes.to(device)
-            self.packed_latent_position_ids = self.packed_latent_position_ids.to(device)
+            self.padded_images = _to(self.padded_images, device)
+            self.packed_vae_token_indexes = _to(self.packed_vae_token_indexes, device)
+            self.packed_latent_position_ids = _to(self.packed_latent_position_ids, device)
 
         if hasattr(self, 'packed_timesteps'):
-            self.packed_timesteps = self.packed_timesteps.to(device)
-            self.mse_loss_indexes = self.mse_loss_indexes.to(device)
+            self.packed_timesteps = _to(self.packed_timesteps, device)
+            self.mse_loss_indexes = _to(self.mse_loss_indexes, device)
 
         if hasattr(self, 'packed_vit_tokens'):
-            self.packed_vit_tokens = self.packed_vit_tokens.to(device)
-            self.packed_vit_position_ids = self.packed_vit_position_ids.to(device)
-            self.packed_vit_token_indexes = self.packed_vit_token_indexes.to(device)
-            self.vit_token_seqlens = self.vit_token_seqlens.to(device)
+            self.packed_vit_tokens = _to(self.packed_vit_tokens, device)
+            self.packed_vit_position_ids = _to(self.packed_vit_position_ids, device)
+            self.packed_vit_token_indexes = _to(self.packed_vit_token_indexes, device)
+            self.vit_token_seqlens = _to(self.vit_token_seqlens, device)
 
         if hasattr(self, 'packed_label_ids'):
-            self.packed_label_ids = self.packed_label_ids.to(device)
-            self.ce_loss_indexes = self.ce_loss_indexes.to(device)
-            self.ce_loss_weights = self.ce_loss_weights.to(device)
+            self.packed_label_ids = _to(self.packed_label_ids, device)
+            self.ce_loss_indexes = _to(self.ce_loss_indexes, device)
+            self.ce_loss_weights = _to(self.ce_loss_weights, device)
 
         return self
 
@@ -596,6 +602,8 @@ class SimpleCustomBatch:
             data['packed_latent_position_ids'] = self.packed_latent_position_ids
             data['packed_vae_token_indexes'] = self.packed_vae_token_indexes
 
+        if hasattr(self, 'vit_max_seqlen_cpu'):
+            data['vit_max_seqlen'] = self.vit_max_seqlen_cpu
         if hasattr(self, 'packed_vit_tokens'):
             data['packed_vit_tokens'] = self.packed_vit_tokens
             data['packed_vit_position_ids'] = self.packed_vit_position_ids

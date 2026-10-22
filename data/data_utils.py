@@ -32,10 +32,11 @@ def create_sparse_mask(document_lens, split_lens, attn_modes, device):
         value_noise = i if model == 'noise' else -1
         noise_tmp.extend([value_noise] * length)
 
-    full_and_noise_seq_id = torch.Tensor(full_and_noise_tmp).to(device)
-    noise_seq_id = torch.Tensor(noise_tmp).to(device)
+    from train.async_log import to_device as _to
+    full_and_noise_seq_id = _to(torch.Tensor(full_and_noise_tmp), device)
+    noise_seq_id = _to(torch.Tensor(noise_tmp), device)
 
-    document_id = torch.cat([torch.full((l,), i) for i, l in enumerate(document_lens, start=1)]).to(device)
+    document_id = _to(torch.cat([torch.full((l,), i) for i, l in enumerate(document_lens, start=1)]), device)
 
     return and_masks(or_masks(causal_mask, full_and_noise_mask), remove_noise_mask, sample_mask)
 

@@ -16,6 +16,9 @@ from transformers.activations import ACT2FN
 from modeling.siglip.configuration_siglip import SiglipVisionConfig as _SiglipVisionConfig
 from modeling.siglip.modeling_siglip import SiglipAttention, SiglipPreTrainedModel
 from flash_attn import flash_attn_varlen_func
+from modeling.bagel import fused_vit as _fused_vit
+from modeling.bagel import vit_layer_fn as _vit_fn
+from modeling.bagel import fsdp_pregather as _fsdp_pregather
 
 
 class SiglipVisionConfig(_SiglipVisionConfig):
@@ -278,6 +281,10 @@ class SiglipEncoderLayer(nn.Module):
         cos_w: torch.Tensor = None,
         sin_w: torch.Tensor = None
     ) -> torch.Tensor:
+        if _vit_fn.usable(self):
+            return _vit_fn.layer_forward(self, hidden_states, cu_seqlens, max_seqlen)
+        if _fused_vit.usable(self):
+            return _fused_vit.layer_forward(self, hidden_states, cu_seqlens, max_seqlen, flash_attn_varlen_func)
         residual = hidden_states
 
         hidden_states = self.layer_norm1(hidden_states)
@@ -320,6 +327,7 @@ class SiglipEncoder(nn.Module):
     ) -> torch.Tensor:
 
         hidden_states = inputs_embeds
+        _fsdp_pregather.pregather(self)
         for encoder_layer in self.layers:
             hidden_states = encoder_layer(hidden_states, cu_seqlens, max_seqlen,
                                           cos_h=cos_h, sin_h=sin_h, cos_w=cos_w, sin_w=sin_w)
