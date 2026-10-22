@@ -1,0 +1,29 @@
+{
+  "seed": 4398,
+  "steps": 2000,
+  "data_seed": 42,
+  "exit_code": 0,
+  "production_mode": true,
+  "timing": {
+    "launch_to_exit_s": 2161.055977344513,
+    "training_loop_wall_s": 1744.0,
+    "training_loop_s_per_step": 0.872,
+    "end_to_end_s_per_step": 1.0805279886722565,
+    "final_checkpoint_save_s": 188.0,
+    "common_steady_log_spans": [
+      {
+        "from_logged_step": 200,
+        "to_logged_step": 999,
+        "intervals": 799,
+        "wall_s": 588.0
+      },
+      {
+        "from_logged_step": 1002,
+        "to_logged_step": 1998,
+        "intervals": 996,
+        "wall_s": 726.0
+      }
+    ],
+    "common_steady_log_span_s_per_step": 0.732033426183844
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "round1_original_summary_sha256": "3be62666c97fc64a511f6a65156bbdf64747e6149006fc28dbc3aa5b14ce4c1f",
+  "round2_original_summary_sha256": "8213caaa9cf6245011567d91da475e34be751ba4437678945c1114f45b8fcb72",
+  "round1_original_verdict_sha256": "1cd11ece0c2721626ce1d1b612b7d7cc849f28b1afd287ac10955d21f7709d90",
+  "round2_original_verdict_sha256": "01550953237b9fcae755dcc2cb7c5da05c0d7806e07ec5a9fa06e03caa343436",
+  "original_evaluator_sha256": "6642f9e859ee797e31216b74b44a88f9d0eebd13268b0364e61bd2b1549bab92",
+  "initial_weights_sha256": "0b41c43835fd737b8c948e604870da522c091dcf151f3e8d55f84781765ee1a3",
+  "training_jsonl_sha256": "a46700ddc8d4d5b71ab2c4eac167517ed85dae9d6e6adb5e01d9a605e3715815",
+  "heldout_jsonl_sha256": "24bc948fe74ca90bea84f504159ee2d573d8f079e662cbc01bdd0120f9049934",
+  "original_round1_unchanged": true,
+  "sanitization": "Only identifying/operational metadata and local artifact paths removed. Numerical values, comparison formulas and both verdicts preserved. Portable wrappers change path routing; they have not been rerun on GPUs."
+}

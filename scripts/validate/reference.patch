@@ -1,0 +1,58 @@
+diff --git a/train/pretrain_unified_navit.py b/train/pretrain_unified_navit.py
+index a6f239b..d2df2c7 100644
+--- a/train/pretrain_unified_navit.py
++++ b/train/pretrain_unified_navit.py
+@@ -2,6 +2,8 @@
+ # SPDX-License-Identifier: Apache-2.0
+ 
+ import functools
++import json
++import hashlib
+ import gc
+ import os
+ import wandb
+@@ -559,9 +561,14 @@ def main():
+         num_shard=training_args.num_shard,
+     )
+     ema_model = deepcopy(model)
+-    model, ema_model = FSDPCheckpoint.try_load_ckpt(
+-        resume_from, logger, model, ema_model, resume_from_ema=finetune_from_ema
+-    )
++    # host-fit: load the checkpoint one rank at a time (keeps host-memory peak below the container limit).
++    for _load_rank in range(dist.get_world_size()):
++        if dist.get_rank() == _load_rank:
++            model, ema_model = FSDPCheckpoint.try_load_ckpt(
++                resume_from, logger, model, ema_model, resume_from_ema=finetune_from_ema
++            )
++            gc.collect()
++        dist.barrier()
+     ema_model = fsdp_ema_setup(ema_model, fsdp_config)
+     fsdp_model = fsdp_wrapper(model, fsdp_config)
+     apply_activation_checkpointing(
+@@ -668,6 +675,16 @@ def main():
+         if curr_step >= training_args.total_steps:
+             logger.info(f"Reached total_steps={training_args.total_steps}, stopping training.")
+             break
++        if curr_step < 6:
++            pair_cpu = data.to_dict()
++            pair_hash = hashlib.sha256()
++            for pair_k in ['packed_text_ids', 'packed_label_ids', 'padded_images', 'packed_vit_tokens', 'packed_timesteps']:
++                pair_t = pair_cpu.get(pair_k)
++                if torch.is_tensor(pair_t):
++                    pair_hash.update(pair_t.contiguous().numpy().tobytes())
++            with open(os.path.join(training_args.results_dir, f'input_rank{dist.get_rank()}.jsonl'), 'a') as pair_f:
++                pair_f.write(json.dumps(dict(step=curr_step, sha256=pair_hash.hexdigest(), sequence_length=pair_cpu['sequence_length'])) + '\n')
++            del pair_cpu, pair_hash
+         data = data.cuda(device).to_dict()
+         data_indexes = data.pop('batch_data_indexes', None)
+         ce_loss_weights = data.pop('ce_loss_weights', None)       
+@@ -782,6 +799,9 @@ def main():
+ 
+             if dist.get_rank() == 0:
+                 wandb.log(wandb_log, step=curr_step)
++                with open(os.path.join(training_args.results_dir, 'metrics.jsonl'), 'a') as pair_f:
++                    json.dump(dict(step=curr_step, elapsed_sec=elapsed, **{k: float(v) for k,v in wandb_log.items()}), pair_f)
++                    pair_f.write('\n')
+             start_time = time()
+             token_window = 0.0
+             seqlen_square_window = 0.0

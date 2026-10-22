@@ -1,0 +1,3313 @@
+{
+  "schema_version": 1,
+  "round1": {
+    "verdict": "not_consistent",
+    "unchanged": true,
+    "summary_sha256": "3be62666c97fc64a511f6a65156bbdf64747e6149006fc28dbc3aa5b14ce4c1f",
+    "verdict_sha256": "1cd11ece0c2721626ce1d1b612b7d7cc849f28b1afd287ac10955d21f7709d90",
+    "consistent_windows_of_20": {
+      "ce": 9,
+      "mse": 8,
+      "log_grad_norm": 5
+    },
+    "final_window_consistent": {
+      "ce": false,
+      "mse": true,
+      "log_grad_norm": true
+    },
+    "heldout_consistent": {
+      "model": false,
+      "ema": false
+    }
+  },
+  "pooled_seeds": [
+    4396,
+    4397,
+    4398,
+    4399
+  ],
+  "arms": {
+    "ref_s1": {
+      "round": 1,
+      "seed": 4396,
+      "data_seed": 42,
+      "steps_recorded": 2000,
+      "continuous_2000_steps": true,
+      "training_complete": true,
+      "exit_code": 0,
+      "source_digest": "c44651bc59cd4f4ca58dd321e1d9fd162632eae5b717afcb492fd83d204ed10b",
+      "certified_source_unchanged": true,
+      "recipe_valid": true,
+      "training_all_finite": true,
+      "nonfinite_events": [],
+      "first_nonfinite_step": null,
+      "first_nonfinite_history": [],
+      "gradient_spikes_gt_10": [
+        {
+          "step": 18,
+          "total_norm": 17.17679786682129
+        },
+        {
+          "step": 21,
+          "total_norm": 12.850906372070312
+        },
+        {
+          "step": 25,
+          "total_norm": 15.378153800964355
+        },
+        {
+          "step": 26,
+          "total_norm": 32.40814971923828
+        },
+        {
+          "step": 30,
+          "total_norm": 10.685199737548828
+        },
+        {
+          "step": 34,
+          "total_norm": 10.090051651000977
+        },
+        {
+          "step": 37,
+          "total_norm": 12.989765167236328
+        },
+        {
+          "step": 38,
+          "total_norm": 11.07120132446289
+        },
+        {
+          "step": 39,
+          "total_norm": 10.55753231048584
+        },
+        {
+          "step": 40,
+          "total_norm": 12.525888442993164
+        },
+        {
+          "step": 42,
+          "total_norm": 15.704378128051758
+        },
+        {
+          "step": 67,
+          "total_norm": 13.925252914428711
+        },
+        {
+          "step": 92,
+          "total_norm": 14.753186225891113
+        },
+        {
+          "step": 123,
+          "total_norm": 16.91391944885254
+        },
+        {
+          "step": 127,
+          "total_norm": 12.226995468139648
+        }
+      ],
+      "gradient_spike_count": 15,
+      "maximum_finite_gradient_norm": 32.40814971923828,
+      "nonpositive_gradient_steps": [],
+      "heldout": {
+        "model": {
+          "status": "ok",
+          "rows": 100,
+          "total_ce_tokens": 8407,
+          "mean_text_ce": 1.347595500041376,
+          "mean_row_ce": 1.2069372357969288,
+          "all_finite": true,
+          "nonfinite_rows": [],
+          "checkpoint_sha256": "3a03b03110d34b049c2051316a15216501b7adad09f52c83fe529250af80338a",
+          "evaluator_sha256": "6642f9e859ee797e31216b74b44a88f9d0eebd13268b0364e61bd2b1549bab92",
+          "manifest_sha256": "68ce90737ac38ec00b1a20196cc81e1d2866cab0550b671fb3648136b723a623",
+          "valid_common_evaluation": true
+        },
+        "ema": {
+          "status": "ok",
+          "rows": 100,
+          "total_ce_tokens": 8407,
+          "mean_text_ce": 0.7442330625517496,
+          "mean_row_ce": 0.6144485550948436,
+          "all_finite": true,
+          "nonfinite_rows": [],
+          "checkpoint_sha256": "baf55f6d8ea77a069c9413d0499f98a3d387bbc7241ef2880b3823f46e3fc8e2",
+          "evaluator_sha256": "6642f9e859ee797e31216b74b44a88f9d0eebd13268b0364e61bd2b1549bab92",
+          "manifest_sha256": "68ce90737ac38ec00b1a20196cc81e1d2866cab0550b671fb3648136b723a623",
+          "valid_common_evaluation": true
+        }
+      },
+      "cleanup_recorded": true,
+      "timing": {
+        "launch_to_exit_s": 3527.45999956131,
+        "training_loop_wall_s": 3132.0,
+        "training_loop_s_per_step": 1.566,
+        "end_to_end_s_per_step": 1.7637299997806548,
+        "final_checkpoint_save_s": 179.0,
+        "common_steady_log_spans": [
+          {
+            "from_logged_step": 200,
+            "to_logged_step": 999,
+            "intervals": 799,
+            "wall_s": 1172.0
+          },
+          {
+            "from_logged_step": 1002,
+            "to_logged_step": 1998,
+            "intervals": 996,
+            "wall_s": 1452.0
+          }
+        ],
+        "common_steady_log_span_s_per_step": 1.4618384401114206
+      }
+    },
+    "ref_s2": {
+      "round": 1,
+      "seed": 4397,
+      "data_seed": 42,
+      "steps_recorded": 2000,
+      "continuous_2000_steps": true,
+      "training_complete": true,
+      "exit_code": 0,
+      "source_digest": "c44651bc59cd4f4ca58dd321e1d9fd162632eae5b717afcb492fd83d204ed10b",
+      "certified_source_unchanged": true,
+      "recipe_valid": true,
+      "training_all_finite": true,
+      "nonfinite_events": [],
+      "first_nonfinite_step": null,
+      "first_nonfinite_history": [],
+      "gradient_spikes_gt_10": [
+        {
+          "step": 43,
+          "total_norm": 25.304216384887695
+        },
+        {
+          "step": 45,
+          "total_norm": 10.093168258666992
+        },
+        {
+          "step": 50,
+          "total_norm": 10.382678031921387
+        },
+        {
+          "step": 69,
+          "total_norm": 14.514873504638672
+        },
+        {
+          "step": 84,
+          "total_norm": 17.98580551147461
+        },
+        {
+          "step": 95,
+          "total_norm": 11.156031608581543
+        },
+        {
+          "step": 121,
+          "total_norm": 10.703496932983398
+        },
+        {
+          "step": 174,
+          "total_norm": 13.253776550292969
+        },
+        {
+          "step": 262,
+          "total_norm": 11.18157958984375
+        },
+        {
+          "step": 371,
+          "total_norm": 12.386306762695312
+        },
+        {
+          "step": 385,
+          "total_norm": 19.799070358276367
+        }
+      ],
+      "gradient_spike_count": 11,
+      "maximum_finite_gradient_norm": 25.304216384887695,
+      "nonpositive_gradient_steps": [],
+      "heldout": {
+        "model": {
+          "status": "ok",
+          "rows": 100,
+          "total_ce_tokens": 8407,
+          "mean_text_ce": 1.368135900975011,
+          "mean_row_ce": 1.2067165068586092,
+          "all_finite": true,
+          "nonfinite_rows": [],
+          "checkpoint_sha256": "7c1f07f058ca962b0dcb4af3353d76ff1b4f231af4deb4bcb5ac7b0561a57e5a",
+          "evaluator_sha256": "6642f9e859ee797e31216b74b44a88f9d0eebd13268b0364e61bd2b1549bab92",
+          "manifest_sha256": "68ce90737ac38ec00b1a20196cc81e1d2866cab0550b671fb3648136b723a623",
+          "valid_common_evaluation": true
+        },
+        "ema": {
+          "status": "ok",
+          "rows": 100,
+          "total_ce_tokens": 8407,
+          "mean_text_ce": 0.7460683048501712,
+          "mean_row_ce": 0.6190040832805025,
+          "all_finite": true,
+          "nonfinite_rows": [],
+          "checkpoint_sha256": "e7d2236444424812d39bd5f089e8965d1116100a8b4c9ebe8fba1a17846f105f",
+          "evaluator_sha256": "6642f9e859ee797e31216b74b44a88f9d0eebd13268b0364e61bd2b1549bab92",
+          "manifest_sha256": "68ce90737ac38ec00b1a20196cc81e1d2866cab0550b671fb3648136b723a623",
+          "valid_common_evaluation": true
+        }
+      },
+      "cleanup_recorded": true,
+      "timing": {
+        "launch_to_exit_s": 3641.8282594680786,
+        "training_loop_wall_s": 3238.0,
+        "training_loop_s_per_step": 1.619,
+        "end_to_end_s_per_step": 1.8209141297340392,
+        "final_checkpoint_save_s": 166.0,
+        "common_steady_log_spans": [
+          {
+            "from_logged_step": 200,
+            "to_logged_step": 999,
+            "intervals": 799,
+            "wall_s": 1215.0
+          },
+          {
+            "from_logged_step": 1002,
+            "to_logged_step": 1998,
+            "intervals": 996,
+            "wall_s": 1505.0
+          }
+        ],
+        "common_steady_log_span_s_per_step": 1.5153203342618384
+      }
+    },
+    "ref_s3": {
+      "round": 2,
+      "seed": 4398,
+      "data_seed": 42,
+      "steps_recorded": 2000,
+      "continuous_2000_steps": true,
+      "training_complete": true,
+      "exit_code": 0,
+      "source_digest": "c44651bc59cd4f4ca58dd321e1d9fd162632eae5b717afcb492fd83d204ed10b",
+      "certified_source_unchanged": true,
+      "recipe_valid": true,
+      "training_all_finite": true,
+      "nonfinite_events": [],
+      "first_nonfinite_step": null,
+      "first_nonfinite_history": [],
+      "gradient_spikes_gt_10": [
+        {
+          "step": 14,
+          "total_norm": 13.828509330749512
+        },
+        {
+          "step": 15,
+          "total_norm": 12.691727638244629
+        },
+        {
+          "step": 18,
+          "total_norm": 12.193693161010742
+        },
+        {
+          "step": 32,
+          "total_norm": 26.69928741455078
+        },
+        {
+          "step": 43,
+          "total_norm": 21.130516052246094
+        },
+        {
+          "step": 90,
+          "total_norm": 31.0555362701416
+        },
+        {
+          "step": 99,
+          "total_norm": 19.662425994873047
+        },
+        {
+          "step": 134,
+          "total_norm": 10.428430557250977
+        },
+        {
+          "step": 153,
+          "total_norm": 10.182207107543945
+        },
+        {
+          "step": 251,
+          "total_norm": 22.62948226928711
+        },
+        {
+          "step": 603,
+          "total_norm": 15.072600364685059
+        },
+        {
+          "step": 785,
+          "total_norm": 13.676974296569824
+        }
+      ],
+      "gradient_spike_count": 12,
+      "maximum_finite_gradient_norm": 31.0555362701416,
+      "nonpositive_gradient_steps": [],
+      "heldout": {
+        "model": {
+          "status": "ok",
+          "rows": 100,
+          "total_ce_tokens": 8407,
+          "mean_text_ce": 1.3055564423045294,
+          "mean_row_ce": 1.1716238892988473,
+          "all_finite": true,
+          "nonfinite_rows": [],
+          "checkpoint_sha256": "381d58750f49183f78fac7e13415b0d2e1ac609fed607993b7a20f6ca569542f",
+          "evaluator_sha256": "6642f9e859ee797e31216b74b44a88f9d0eebd13268b0364e61bd2b1549bab92",
+          "manifest_sha256": "68ce90737ac38ec00b1a20196cc81e1d2866cab0550b671fb3648136b723a623",
+          "valid_common_evaluation": true
+        },
+        "ema": {
+          "status": "ok",
+          "rows": 100,
+          "total_ce_tokens": 8407,
+          "mean_text_ce": 0.7451792064909278,
+          "mean_row_ce": 0.6161513230260743,
+          "all_finite": true,
+          "nonfinite_rows": [],
+          "checkpoint_sha256": "05ea1c393f23e613111385ca6706c11547d8dce9538c0c2807474b5f4148090e",
+          "evaluator_sha256": "6642f9e859ee797e31216b74b44a88f9d0eebd13268b0364e61bd2b1549bab92",
+          "manifest_sha256": "68ce90737ac38ec00b1a20196cc81e1d2866cab0550b671fb3648136b723a623",
+          "valid_common_evaluation": true
+        }
+      },
+      "cleanup_recorded": true,
+      "timing": {
+        "launch_to_exit_s": 3517.2668640613556,
+        "training_loop_wall_s": 3116.0,
+        "training_loop_s_per_step": 1.558,
+        "end_to_end_s_per_step": 1.7586334320306778,
+        "final_checkpoint_save_s": 171.0,
+        "common_steady_log_spans": [
+          {
+            "from_logged_step": 200,
+            "to_logged_step": 999,
+            "intervals": 799,
+            "wall_s": 1172.0
+          },
+          {
+            "from_logged_step": 1002,
+            "to_logged_step": 1998,
+            "intervals": 996,
+            "wall_s": 1447.0
+          }
+        ],
+        "common_steady_log_span_s_per_step": 1.4590529247910864
+      }
+    },
+    "ref_s4": {
+      "round": 2,
+      "seed": 4399,
+      "data_seed": 42,
+      "steps_recorded": 2000,
+      "continuous_2000_steps": true,
+      "training_complete": true,
+      "exit_code": 0,
+      "source_digest": "c44651bc59cd4f4ca58dd321e1d9fd162632eae5b717afcb492fd83d204ed10b",
+      "certified_source_unchanged": true,
+      "recipe_valid": true,
+      "training_all_finite": true,
+      "nonfinite_events": [],
+      "first_nonfinite_step": null,
+      "first_nonfinite_history": [],
+      "gradient_spikes_gt_10": [
+        {
+          "step": 18,
+          "total_norm": 10.746024131774902
+        },
+        {
+          "step": 37,
+          "total_norm": 10.43272590637207
+        },
+        {
+          "step": 39,
+          "total_norm": 13.08515739440918
+        },
+        {
+          "step": 46,
+          "total_norm": 12.195429801940918
+        },
+        {
+          "step": 57,
+          "total_norm": 15.056591987609863
+        },
+        {
+          "step": 94,
+          "total_norm": 13.640859603881836
+        },
+        {
+          "step": 170,
+          "total_norm": 12.139264106750488
+        },
+        {
+          "step": 1050,
+          "total_norm": 85.55256652832031
+        }
+      ],
+      "gradient_spike_count": 8,
+      "maximum_finite_gradient_norm": 85.55256652832031,
+      "nonpositive_gradient_steps": [],
+      "heldout": {
+        "model": {
+          "status": "ok",
+          "rows": 100,
+          "total_ce_tokens": 8407,
+          "mean_text_ce": 1.2961914596623412,
+          "mean_row_ce": 1.1441151798103997,
+          "all_finite": true,
+          "nonfinite_rows": [],
+          "checkpoint_sha256": "27b231f9b2749efd113e748423a675937c7d84dedaeb792327b54f915a6701bf",
+          "evaluator_sha256": "6642f9e859ee797e31216b74b44a88f9d0eebd13268b0364e61bd2b1549bab92",
+          "manifest_sha256": "68ce90737ac38ec00b1a20196cc81e1d2866cab0550b671fb3648136b723a623",
+          "valid_common_evaluation": true
+        },
+        "ema": {
+          "status": "ok",
+          "rows": 100,
+          "total_ce_tokens": 8407,
+          "mean_text_ce": 0.7440612431129491,
+          "mean_row_ce": 0.6167805073831171,
+          "all_finite": true,
+          "nonfinite_rows": [],
+          "checkpoint_sha256": "df234006c0a5ecb56d0ac87e194a9895e0fa30e11e759c8fcb424a0b89445081",
+          "evaluator_sha256": "6642f9e859ee797e31216b74b44a88f9d0eebd13268b0364e61bd2b1549bab92",
+          "manifest_sha256": "68ce90737ac38ec00b1a20196cc81e1d2866cab0550b671fb3648136b723a623",
+          "valid_common_evaluation": true
+        }
+      },
+      "cleanup_recorded": true,
+      "timing": {
+        "launch_to_exit_s": 3726.249771595001,
+        "training_loop_wall_s": 3297.0,
+        "training_loop_s_per_step": 1.6485,
+        "end_to_end_s_per_step": 1.8631248857975007,
+        "final_checkpoint_save_s": 207.0,
+        "common_steady_log_spans": [
+          {
+            "from_logged_step": 200,
+            "to_logged_step": 999,
+            "intervals": 799,
+            "wall_s": 1211.0
+          },
+          {
+            "from_logged_step": 1002,
+            "to_logged_step": 1998,
+            "intervals": 996,
+            "wall_s": 1542.0
+          }
+        ],
+        "common_steady_log_span_s_per_step": 1.5337047353760445
+      }
+    },
+    "opt_s1": {
+      "round": 1,
+      "seed": 4396,
+      "data_seed": 42,
+      "steps_recorded": 2000,
+      "continuous_2000_steps": true,
+      "training_complete": true,
+      "exit_code": 0,
+      "source_digest": "ca55965ddd98afa7fb87ca5c77cfd866fa22ee574d6f291726b06af1a43e2c4c",
+      "certified_source_unchanged": true,
+      "recipe_valid": true,
+      "training_all_finite": true,
+      "nonfinite_events": [],
+      "first_nonfinite_step": null,
+      "first_nonfinite_history": [],
+      "gradient_spikes_gt_10": [
+        {
+          "step": 11,
+          "total_norm": 20.151836395263672
+        },
+        {
+          "step": 21,
+          "total_norm": 60.423221588134766
+        },
+        {
+          "step": 27,
+          "total_norm": 10.060823440551758
+        },
+        {
+          "step": 29,
+          "total_norm": 14.417319297790527
+        },
+        {
+          "step": 30,
+          "total_norm": 13.866154670715332
+        },
+        {
+          "step": 33,
+          "total_norm": 10.210732460021973
+        },
+        {
+          "step": 38,
+          "total_norm": 10.361958503723145
+        },
+        {
+          "step": 39,
+          "total_norm": 11.00954532623291
+        },
+        {
+          "step": 40,
+          "total_norm": 14.415953636169434
+        },
+        {
+          "step": 67,
+          "total_norm": 17.315038681030273
+        },
+        {
+          "step": 100,
+          "total_norm": 12.724431037902832
+        },
+        {
+          "step": 123,
+          "total_norm": 10.281778335571289
+        },
+        {
+          "step": 217,
+          "total_norm": 23.87708282470703
+        },
+        {
+          "step": 430,
+          "total_norm": 13.809857368469238
+        },
+        {
+          "step": 439,
+          "total_norm": 29.29756736755371
+        },
+        {
+          "step": 499,
+          "total_norm": 12.568507194519043
+        },
+        {
+          "step": 604,
+          "total_norm": 14.773923873901367
+        }
+      ],
+      "gradient_spike_count": 17,
+      "maximum_finite_gradient_norm": 60.423221588134766,
+      "nonpositive_gradient_steps": [],
+      "heldout": {
+        "model": {
+          "status": "ok",
+          "rows": 100,
+          "total_ce_tokens": 8407,
+          "mean_text_ce": 1.3854705109612702,
+          "mean_row_ce": 1.2130574206708118,
+          "all_finite": true,
+          "nonfinite_rows": [],
+          "checkpoint_sha256": "1431dfb35d3339f097078f78772cd3bc87ca68d10abf2965926cb1e313b749e2",
+          "evaluator_sha256": "6642f9e859ee797e31216b74b44a88f9d0eebd13268b0364e61bd2b1549bab92",
+          "manifest_sha256": "68ce90737ac38ec00b1a20196cc81e1d2866cab0550b671fb3648136b723a623",
+          "valid_common_evaluation": true
+        },
+        "ema": {
+          "status": "ok",
+          "rows": 100,
+          "total_ce_tokens": 8407,
+          "mean_text_ce": 0.7430454491009195,
+          "mean_row_ce": 0.6153799675507674,
+          "all_finite": true,
+          "nonfinite_rows": [],
+          "checkpoint_sha256": "5a384c6cd8af1fa62536cd39f80d3698a2ccf7bcb9c937ec4976a1aead8feaa2",
+          "evaluator_sha256": "6642f9e859ee797e31216b74b44a88f9d0eebd13268b0364e61bd2b1549bab92",
+          "manifest_sha256": "68ce90737ac38ec00b1a20196cc81e1d2866cab0550b671fb3648136b723a623",
+          "valid_common_evaluation": true
+        }
+      },
+      "cleanup_recorded": true,
+      "timing": {
+        "launch_to_exit_s": 2209.180319786072,
+        "training_loop_wall_s": 1786.0,
+        "training_loop_s_per_step": 0.893,
+        "end_to_end_s_per_step": 1.1045901598930359,
+        "final_checkpoint_save_s": 190.0,
+        "common_steady_log_spans": [
+          {
+            "from_logged_step": 200,
+            "to_logged_step": 999,
+            "intervals": 799,
+            "wall_s": 612.0
+          },
+          {
+            "from_logged_step": 1002,
+            "to_logged_step": 1998,
+            "intervals": 996,
+            "wall_s": 751.0
+          }
+        ],
+        "common_steady_log_span_s_per_step": 0.7593314763231198
+      }
+    },
+    "opt_s2": {
+      "round": 1,
+      "seed": 4397,
+      "data_seed": 42,
+      "steps_recorded": 2000,
+      "continuous_2000_steps": true,
+      "training_complete": true,
+      "exit_code": 0,
+      "source_digest": "ca55965ddd98afa7fb87ca5c77cfd866fa22ee574d6f291726b06af1a43e2c4c",
+      "certified_source_unchanged": true,
+      "recipe_valid": true,
+      "training_all_finite": true,
+      "nonfinite_events": [],
+      "first_nonfinite_step": null,
+      "first_nonfinite_history": [],
+      "gradient_spikes_gt_10": [
+        {
+          "step": 11,
+          "total_norm": 14.804793357849121
+        },
+        {
+          "step": 20,
+          "total_norm": 11.955856323242188
+        },
+        {
+          "step": 44,
+          "total_norm": 21.713119506835938
+        },
+        {
+          "step": 45,
+          "total_norm": 10.187905311584473
+        },
+        {
+          "step": 47,
+          "total_norm": 20.89322280883789
+        },
+        {
+          "step": 95,
+          "total_norm": 13.369291305541992
+        },
+        {
+          "step": 125,
+          "total_norm": 13.407220840454102
+        },
+        {
+          "step": 220,
+          "total_norm": 42.049495697021484
+        },
+        {
+          "step": 284,
+          "total_norm": 14.099737167358398
+        },
+        {
+          "step": 443,
+          "total_norm": 12.1307373046875
+        },
+        {
+          "step": 662,
+          "total_norm": 61.90625
+        }
+      ],
+      "gradient_spike_count": 11,
+      "maximum_finite_gradient_norm": 61.90625,
+      "nonpositive_gradient_steps": [],
+      "heldout": {
+        "model": {
+          "status": "ok",
+          "rows": 100,
+          "total_ce_tokens": 8407,
+          "mean_text_ce": 1.3179267561079788,
+          "mean_row_ce": 1.1325564472781304,
+          "all_finite": true,
+          "nonfinite_rows": [],
+          "checkpoint_sha256": "6d162ba7e14f4ec49a60c8c2af35a919a8eafcce982270ee16d178215b9be908",
+          "evaluator_sha256": "6642f9e859ee797e31216b74b44a88f9d0eebd13268b0364e61bd2b1549bab92",
+          "manifest_sha256": "68ce90737ac38ec00b1a20196cc81e1d2866cab0550b671fb3648136b723a623",
+          "valid_common_evaluation": true
+        },
+        "ema": {
+          "status": "ok",
+          "rows": 100,
+          "total_ce_tokens": 8407,
+          "mean_text_ce": 0.7433658876841057,
+          "mean_row_ce": 0.6146319235186062,
+          "all_finite": true,
+          "nonfinite_rows": [],
+          "checkpoint_sha256": "89ead2747b0cfe58b1c59dc3ff0d541dc64dfe714caf7bde185245cb9ef8896e",
+          "evaluator_sha256": "6642f9e859ee797e31216b74b44a88f9d0eebd13268b0364e61bd2b1549bab92",
+          "manifest_sha256": "68ce90737ac38ec00b1a20196cc81e1d2866cab0550b671fb3648136b723a623",
+          "valid_common_evaluation": true
+        }
+      },
+      "cleanup_recorded": true,
+      "timing": {
+        "launch_to_exit_s": 2110.0122957229614,
+        "training_loop_wall_s": 1709.0,
+        "training_loop_s_per_step": 0.8545,
+        "end_to_end_s_per_step": 1.0550061478614807,
+        "final_checkpoint_save_s": 175.0,
+        "common_steady_log_spans": [
+          {
+            "from_logged_step": 200,
+            "to_logged_step": 999,
+            "intervals": 799,
+            "wall_s": 590.0
+          },
+          {
+            "from_logged_step": 1002,
+            "to_logged_step": 1998,
+            "intervals": 996,
+            "wall_s": 726.0
+          }
+        ],
+        "common_steady_log_span_s_per_step": 0.7331476323119778
+      }
+    },
+    "opt_s3": {
+      "round": 2,
+      "seed": 4398,
+      "data_seed": 42,
+      "steps_recorded": 2000,
+      "continuous_2000_steps": true,
+      "training_complete": true,
+      "exit_code": 0,
+      "source_digest": "ca55965ddd98afa7fb87ca5c77cfd866fa22ee574d6f291726b06af1a43e2c4c",
+      "certified_source_unchanged": true,
+      "recipe_valid": true,
+      "training_all_finite": true,
+      "nonfinite_events": [],
+      "first_nonfinite_step": null,
+      "first_nonfinite_history": [],
+      "gradient_spikes_gt_10": [
+        {
+          "step": 0,
+          "total_norm": 90.82144927978516
+        },
+        {
+          "step": 20,
+          "total_norm": 16.694992065429688
+        },
+        {
+          "step": 32,
+          "total_norm": 21.12472915649414
+        },
+        {
+          "step": 44,
+          "total_norm": 10.601456642150879
+        },
+        {
+          "step": 60,
+          "total_norm": 13.411554336547852
+        },
+        {
+          "step": 76,
+          "total_norm": 11.116827964782715
+        },
+        {
+          "step": 77,
+          "total_norm": 14.340177536010742
+        },
+        {
+          "step": 90,
+          "total_norm": 12.559098243713379
+        },
+        {
+          "step": 101,
+          "total_norm": 10.9462308883667
+        },
+        {
+          "step": 210,
+          "total_norm": 13.981644630432129
+        },
+        {
+          "step": 212,
+          "total_norm": 10.636223793029785
+        },
+        {
+          "step": 251,
+          "total_norm": 18.918140411376953
+        },
+        {
+          "step": 256,
+          "total_norm": 21.397069931030273
+        }
+      ],
+      "gradient_spike_count": 13,
+      "maximum_finite_gradient_norm": 90.82144927978516,
+      "nonpositive_gradient_steps": [],
+      "heldout": {
+        "model": {
+          "status": "ok",
+          "rows": 100,
+          "total_ce_tokens": 8407,
+          "mean_text_ce": 1.2776161372569421,
+          "mean_row_ce": 1.1051572883855783,
+          "all_finite": true,
+          "nonfinite_rows": [],
+          "checkpoint_sha256": "f8fac7e6c3d22dd17cb840cfab6783b6dfcb6d09ab308be82d1ec8c24e17da69",
+          "evaluator_sha256": "6642f9e859ee797e31216b74b44a88f9d0eebd13268b0364e61bd2b1549bab92",
+          "manifest_sha256": "68ce90737ac38ec00b1a20196cc81e1d2866cab0550b671fb3648136b723a623",
+          "valid_common_evaluation": true
+        },
+        "ema": {
+          "status": "ok",
+          "rows": 100,
+          "total_ce_tokens": 8407,
+          "mean_text_ce": 0.7426980477217703,
+          "mean_row_ce": 0.6121598745021264,
+          "all_finite": true,
+          "nonfinite_rows": [],
+          "checkpoint_sha256": "f3c42f30436db15a204fab24eba170c8a40a5a09352f4fa2e5f8736becc2e67d",
+          "evaluator_sha256": "6642f9e859ee797e31216b74b44a88f9d0eebd13268b0364e61bd2b1549bab92",
+          "manifest_sha256": "68ce90737ac38ec00b1a20196cc81e1d2866cab0550b671fb3648136b723a623",
+          "valid_common_evaluation": true
+        }
+      },
+      "cleanup_recorded": true,
+      "timing": {
+        "launch_to_exit_s": 2161.055977344513,
+        "training_loop_wall_s": 1744.0,
+        "training_loop_s_per_step": 0.872,
+        "end_to_end_s_per_step": 1.0805279886722565,
+        "final_checkpoint_save_s": 188.0,
+        "common_steady_log_spans": [
+          {
+            "from_logged_step": 200,
+            "to_logged_step": 999,
+            "intervals": 799,
+            "wall_s": 588.0
+          },
+          {
+            "from_logged_step": 1002,
+            "to_logged_step": 1998,
+            "intervals": 996,
+            "wall_s": 726.0
+          }
+        ],
+        "common_steady_log_span_s_per_step": 0.732033426183844
+      }
+    },
+    "opt_s4": {
+      "round": 2,
+      "seed": 4399,
+      "data_seed": 42,
+      "steps_recorded": 2000,
+      "continuous_2000_steps": true,
+      "training_complete": true,
+      "exit_code": 0,
+      "source_digest": "ca55965ddd98afa7fb87ca5c77cfd866fa22ee574d6f291726b06af1a43e2c4c",
+      "certified_source_unchanged": true,
+      "recipe_valid": true,
+      "training_all_finite": true,
+      "nonfinite_events": [],
+      "first_nonfinite_step": null,
+      "first_nonfinite_history": [],
+      "gradient_spikes_gt_10": [
+        {
+          "step": 18,
+          "total_norm": 10.180200576782227
+        },
+        {
+          "step": 33,
+          "total_norm": 10.022500038146973
+        },
+        {
+          "step": 39,
+          "total_norm": 12.72445297241211
+        },
+        {
+          "step": 42,
+          "total_norm": 61.58818817138672
+        },
+        {
+          "step": 94,
+          "total_norm": 22.43416976928711
+        },
+        {
+          "step": 103,
+          "total_norm": 22.271921157836914
+        },
+        {
+          "step": 192,
+          "total_norm": 11.698335647583008
+        },
+        {
+          "step": 211,
+          "total_norm": 11.362456321716309
+        },
+        {
+          "step": 243,
+          "total_norm": 18.644390106201172
+        }
+      ],
+      "gradient_spike_count": 9,
+      "maximum_finite_gradient_norm": 61.58818817138672,
+      "nonpositive_gradient_steps": [],
+      "heldout": {
+        "model": {
+          "status": "ok",
+          "rows": 100,
+          "total_ce_tokens": 8407,
+          "mean_text_ce": 1.3881602693542765,
+          "mean_row_ce": 1.1810017493444827,
+          "all_finite": true,
+          "nonfinite_rows": [],
+          "checkpoint_sha256": "ac604273988a141580af206eacb4215b5c031e2df1ddb60c5f08f5465be1d0c5",
+          "evaluator_sha256": "6642f9e859ee797e31216b74b44a88f9d0eebd13268b0364e61bd2b1549bab92",
+          "manifest_sha256": "68ce90737ac38ec00b1a20196cc81e1d2866cab0550b671fb3648136b723a623",
+          "valid_common_evaluation": true
+        },
+        "ema": {
+          "status": "ok",
+          "rows": 100,
+          "total_ce_tokens": 8407,
+          "mean_text_ce": 0.7439916232429986,
+          "mean_row_ce": 0.6160452546363764,
+          "all_finite": true,
+          "nonfinite_rows": [],
+          "checkpoint_sha256": "159b082896d1ffffa04919a08ce5ff8d817ff143970ee83ae9072ab4da0311a4",
+          "evaluator_sha256": "6642f9e859ee797e31216b74b44a88f9d0eebd13268b0364e61bd2b1549bab92",
+          "manifest_sha256": "68ce90737ac38ec00b1a20196cc81e1d2866cab0550b671fb3648136b723a623",
+          "valid_common_evaluation": true
+        }
+      },
+      "cleanup_recorded": true,
+      "timing": {
+        "launch_to_exit_s": 2140.804914712906,
+        "training_loop_wall_s": 1721.0,
+        "training_loop_s_per_step": 0.8605,
+        "end_to_end_s_per_step": 1.070402457356453,
+        "final_checkpoint_save_s": 187.0,
+        "common_steady_log_spans": [
+          {
+            "from_logged_step": 200,
+            "to_logged_step": 999,
+            "intervals": 799,
+            "wall_s": 587.0
+          },
+          {
+            "from_logged_step": 1002,
+            "to_logged_step": 1998,
+            "intervals": 996,
+            "wall_s": 731.0
+          }
+        ],
+        "common_steady_log_span_s_per_step": 0.7342618384401114
+      }
+    }
+  },
+  "input_checks": {
+    "4396": {
+      "first_six_match_all_eight_ranks": true,
+      "all_2000_recipe_counts_match": true,
+      "mismatch_steps": []
+    },
+    "4397": {
+      "first_six_match_all_eight_ranks": true,
+      "all_2000_recipe_counts_match": true,
+      "mismatch_steps": []
+    },
+    "4398": {
+      "first_six_match_all_eight_ranks": true,
+      "all_2000_recipe_counts_match": true,
+      "mismatch_steps": []
+    },
+    "4399": {
+      "first_six_match_all_eight_ranks": true,
+      "all_2000_recipe_counts_match": true,
+      "mismatch_steps": []
+    }
+  },
+  "pooled_training": {
+    "ce": {
+      "windows": [
+        {
+          "reference_seed_values": [
+            0.7452533048391342,
+            0.7515053161978722,
+            0.7472284489870071,
+            0.7389904662966729
+          ],
+          "candidate_seed_values": [
+            0.744532964527607,
+            0.7502994982898236,
+            0.7466958127915859,
+            0.739985693693161
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.7457443840801716,
+          "candidate_mean": 0.7453784923255444,
+          "sigma_ref": 0.005204080186408012,
+          "sigma_opt": 0.004310793711032955,
+          "delta": 0.010408160372816024,
+          "D": -0.00036589175462720114,
+          "paired_differences": [
+            -0.0007203403115272344,
+            -0.0012058179080486342,
+            -0.00053263619542121,
+            0.000995227396488163
+          ],
+          "paired_t": -0.7697217074182945,
+          "paired_t_p": 0.497519184663143,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 0,
+          "end_step": 99
+        },
+        {
+          "reference_seed_values": [
+            0.383851766847074,
+            0.372552587762475,
+            0.38502933122217653,
+            0.37023552069440485
+          ],
+          "candidate_seed_values": [
+            0.37953288212418557,
+            0.37353101462125776,
+            0.3862103244662285,
+            0.3761589847132564
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.3779173016315326,
+          "candidate_mean": 0.37885830148123206,
+          "sigma_ref": 0.00760676794167632,
+          "sigma_opt": 0.005482505428423911,
+          "delta": 0.01521353588335264,
+          "D": 0.0009409998496994754,
+          "paired_differences": [
+            -0.004318884722888439,
+            0.0009784268587827438,
+            0.0011809932440519644,
+            0.005923464018851521
+          ],
+          "paired_t": 0.44966847643487995,
+          "paired_t_p": 0.6834526615525418,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 100,
+          "end_step": 199
+        },
+        {
+          "reference_seed_values": [
+            0.0869917257502675,
+            0.09273821885697543,
+            0.08957306905882433,
+            0.08403323478065432
+          ],
+          "candidate_seed_values": [
+            0.08667381281964481,
+            0.08725639194250107,
+            0.08292329229647294,
+            0.08549375447444618
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.08833406211168039,
+          "candidate_mean": 0.08558681288326625,
+          "sigma_ref": 0.0037072324578977054,
+          "sigma_opt": 0.001921116418513492,
+          "delta": 0.007414464915795411,
+          "D": -0.002747249228414142,
+          "paired_differences": [
+            -0.00031791293062269355,
+            -0.005481826914474366,
+            -0.0066497767623513865,
+            0.0014605196937918646
+          ],
+          "paired_t": -1.398394095865049,
+          "paired_t_p": 0.25643958571867037,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 200,
+          "end_step": 299
+        },
+        {
+          "reference_seed_values": [
+            0.03509289704496041,
+            0.038554235172923654,
+            0.03733889830298722,
+            0.03882532140589319
+          ],
+          "candidate_seed_values": [
+            0.04047908317297697,
+            0.03966738905990496,
+            0.0364941613166593,
+            0.03987368657486513
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.03745283798169112,
+          "candidate_mean": 0.03912858003110159,
+          "sigma_ref": 0.0017008909427909569,
+          "sigma_opt": 0.0017897411014164712,
+          "delta": 0.0034017818855819138,
+          "D": 0.0016757420494104697,
+          "paired_differences": [
+            0.005386186128016564,
+            0.0011131538869813065,
+            -0.0008447369863279208,
+            0.001048365168971943
+          ],
+          "paired_t": 1.2718908727192337,
+          "paired_t_p": 0.2930549698347209,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 300,
+          "end_step": 399
+        },
+        {
+          "reference_seed_values": [
+            0.025224786694161595,
+            0.02136782285408117,
+            0.024710021329228768,
+            0.02589478980808053
+          ],
+          "candidate_seed_values": [
+            0.027582469953340478,
+            0.025248435081448407,
+            0.02233372760936618,
+            0.02223262056533713
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.024299355171388017,
+          "candidate_mean": 0.024349313302373048,
+          "sigma_ref": 0.002013650383748492,
+          "sigma_opt": 0.002569351132885315,
+          "delta": 0.004027300767496984,
+          "D": 4.99581309850311e-05,
+          "paired_differences": [
+            0.0023576832591788825,
+            0.003880612227367238,
+            -0.0023762937198625877,
+            -0.0036621692427434016
+          ],
+          "paired_t": 0.027478124588732344,
+          "paired_t_p": 0.9798040763369427,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 400,
+          "end_step": 499
+        },
+        {
+          "reference_seed_values": [
+            0.01916107051889412,
+            0.017137033882027027,
+            0.016445066808664706,
+            0.01579163048940245
+          ],
+          "candidate_seed_values": [
+            0.01819948298216332,
+            0.016999185431341175,
+            0.016487439351622016,
+            0.020485171708860436
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.017133700424747076,
+          "candidate_mean": 0.018042819868496734,
+          "sigma_ref": 0.001458950373742923,
+          "sigma_opt": 0.0017793263925806433,
+          "delta": 0.002917900747485846,
+          "D": 0.0009091194437496584,
+          "paired_differences": [
+            -0.000961587536730802,
+            -0.00013784845068585266,
+            4.237254295730991e-05,
+            0.0046935412194579855
+          ],
+          "paired_t": 0.7101053842401405,
+          "paired_t_p": 0.5288602561165473,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 500,
+          "end_step": 599
+        },
+        {
+          "reference_seed_values": [
+            0.01318833368131891,
+            0.014564998635905794,
+            0.014113374305015896,
+            0.013985422187543008
+          ],
+          "candidate_seed_values": [
+            0.012996837643295294,
+            0.013112012368801516,
+            0.011355393214616925,
+            0.014149219339597039
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.013963032202445902,
+          "candidate_mean": 0.012903365641577694,
+          "sigma_ref": 0.0005731856723280825,
+          "sigma_opt": 0.0011547929891522547,
+          "delta": 0.001146371344656165,
+          "D": -0.0010596665608682086,
+          "paired_differences": [
+            -0.00019149603802361484,
+            -0.0014529862671042778,
+            -0.002757981090398971,
+            0.00016379715205403107
+          ],
+          "paired_t": -1.5960637619123212,
+          "paired_t_p": 0.20874908513830667,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 600,
+          "end_step": 699
+        },
+        {
+          "reference_seed_values": [
+            0.01035946326883277,
+            0.010988915784837445,
+            0.01158197433964233,
+            0.011157771893267636
+          ],
+          "candidate_seed_values": [
+            0.010284461727424058,
+            0.010477046923697345,
+            0.010408985970789217,
+            0.010634403723452123
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.011022031321645046,
+          "candidate_mean": 0.010451224586340686,
+          "sigma_ref": 0.0005072983177493105,
+          "sigma_opt": 0.00014584848432214819,
+          "delta": 0.001014596635498621,
+          "D": -0.0005708067353043592,
+          "paired_differences": [
+            -7.500154140871115e-05,
+            -0.0005118688611401006,
+            -0.0011729883688531128,
+            -0.0005233681698155121
+          ],
+          "paired_t": -2.5231063336021826,
+          "paired_t_p": 0.08594210331340711,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 700,
+          "end_step": 799
+        },
+        {
+          "reference_seed_values": [
+            0.008217542965430766,
+            0.008015740046539576,
+            0.009594727769508609,
+            0.009405614905263064
+          ],
+          "candidate_seed_values": [
+            0.00875277074497717,
+            0.011447018555481919,
+            0.010199543300695951,
+            0.0096910898918577
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.008808406421685504,
+          "candidate_mean": 0.010022605623253186,
+          "sigma_ref": 0.0008067215217829987,
+          "sigma_opt": 0.0011228894931452878,
+          "delta": 0.0016134430435659974,
+          "D": 0.0012141992015676818,
+          "paired_differences": [
+            0.0005352277795464041,
+            0.0034312785089423425,
+            0.0006048155311873422,
+            0.0002854749865946367
+          ],
+          "paired_t": 1.6359473590260798,
+          "paired_t_p": 0.20036859946098645,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 800,
+          "end_step": 899
+        },
+        {
+          "reference_seed_values": [
+            0.008089126562554156,
+            0.008426723059310462,
+            0.007574038757593371,
+            0.00934472959022969
+          ],
+          "candidate_seed_values": [
+            0.008886414290609537,
+            0.007897785217428463,
+            0.007900584241870092,
+            0.007846696911583422
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.00835865449242192,
+          "candidate_mean": 0.008132870165372879,
+          "sigma_ref": 0.0007450379374309759,
+          "sigma_opt": 0.0005029730154692516,
+          "delta": 0.0014900758748619518,
+          "D": -0.00022578432704904033,
+          "paired_differences": [
+            0.0007972877280553806,
+            -0.0005289378418819983,
+            0.0003265454842767213,
+            -0.0014980326786462675
+          ],
+          "paired_t": -0.44695438424556533,
+          "paired_t_p": 0.6852051280298879,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 900,
+          "end_step": 999
+        },
+        {
+          "reference_seed_values": [
+            0.007385847659097635,
+            0.00959168623550795,
+            0.007538395309093175,
+            0.0071986185319838115
+          ],
+          "candidate_seed_values": [
+            0.009112267865930335,
+            0.007397853137699712,
+            0.008778772349469364,
+            0.0070142761852184776
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.007928636933920643,
+          "candidate_mean": 0.008075792384579472,
+          "sigma_ref": 0.001117373194787266,
+          "sigma_opt": 0.001025488585739143,
+          "delta": 0.002234746389574532,
+          "D": 0.0001471554506588292,
+          "paired_differences": [
+            0.0017264202068326996,
+            -0.002193833097808238,
+            0.0012403770403761885,
+            -0.000184342346765334
+          ],
+          "paired_t": 0.16734344086023537,
+          "paired_t_p": 0.8777441242689454,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 1000,
+          "end_step": 1099
+        },
+        {
+          "reference_seed_values": [
+            0.006331569727335591,
+            0.0059903340653545455,
+            0.0074052246272185585,
+            0.0077793385900440624
+          ],
+          "candidate_seed_values": [
+            0.0070588764850253935,
+            0.007828265213538544,
+            0.00749185351854976,
+            0.0058173101655847855
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.006876616752488189,
+          "candidate_mean": 0.0070490763456746205,
+          "sigma_ref": 0.0008518423685103052,
+          "sigma_opt": 0.0008794943399034777,
+          "delta": 0.0017036847370206104,
+          "D": 0.0001724595931864312,
+          "paired_differences": [
+            0.0007273067576898029,
+            0.0018379311481839982,
+            8.662889133120161e-05,
+            -0.001962028424459277
+          ],
+          "paired_t": 0.21606659093907613,
+          "paired_t_p": 0.8427933681142793,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 1100,
+          "end_step": 1199
+        },
+        {
+          "reference_seed_values": [
+            0.008143060111106024,
+            0.004082513614994241,
+            0.006206560668069869,
+            0.006215912873940397
+          ],
+          "candidate_seed_values": [
+            0.005265609402667906,
+            0.005785923842995544,
+            0.006332431458649808,
+            0.006906514374859399
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.006162011817027633,
+          "candidate_mean": 0.0060726197697931646,
+          "sigma_ref": 0.0016586897479432888,
+          "sigma_opt": 0.0007062442007113174,
+          "delta": 0.0033173794958865775,
+          "D": -8.939204723446871e-05,
+          "paired_differences": [
+            -0.002877450708438118,
+            0.0017034102280013034,
+            0.00012587079057993847,
+            0.0006906015009190015
+          ],
+          "paired_t": -0.09075553351529808,
+          "paired_t_p": 0.9334069464221154,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 1200,
+          "end_step": 1299
+        },
+        {
+          "reference_seed_values": [
+            0.005571454870332673,
+            0.0062874576139438434,
+            0.003841210617974866,
+            0.005339784608004265
+          ],
+          "candidate_seed_values": [
+            0.0056087028345064025,
+            0.006459252724380349,
+            0.0095438849182392,
+            0.0067229801915891585
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.005259976927563912,
+          "candidate_mean": 0.007083705167178778,
+          "sigma_ref": 0.0010282675035867246,
+          "sigma_opt": 0.0017076474704739001,
+          "delta": 0.0020565350071734493,
+          "D": 0.0018237282396148654,
+          "paired_differences": [
+            3.724796417372937e-05,
+            0.0001717951104365052,
+            0.005702674300264335,
+            0.0013831955835848933
+          ],
+          "paired_t": 1.3733646687533962,
+          "paired_t_p": 0.26327883237777644,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 1300,
+          "end_step": 1399
+        },
+        {
+          "reference_seed_values": [
+            0.005146310241761967,
+            0.009220723534526768,
+            0.00516127368882735,
+            0.007287852512527024
+          ],
+          "candidate_seed_values": [
+            0.0067475985770943225,
+            0.006310567300388357,
+            0.005976555561355781,
+            0.005937087021884509
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.006704039994410778,
+          "candidate_mean": 0.006242952115180742,
+          "sigma_ref": 0.0019562875515740565,
+          "sigma_opt": 0.0003758370409186601,
+          "delta": 0.003912575103148113,
+          "D": -0.0004610878792300358,
+          "paired_differences": [
+            0.0016012883353323558,
+            -0.0029101562341384115,
+            0.0008152818725284307,
+            -0.0013507654906425156
+          ],
+          "paired_t": -0.44869593311270806,
+          "paired_t_p": 0.6840803181989573,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 1400,
+          "end_step": 1499
+        },
+        {
+          "reference_seed_values": [
+            0.005999205955267825,
+            0.005866826473175024,
+            0.005689205467206193,
+            0.003778442671718949
+          ],
+          "candidate_seed_values": [
+            0.0040603803630801846,
+            0.0059856182751536835,
+            0.00687813363623718,
+            0.0045891743901484
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.0053334201418419975,
+          "candidate_mean": 0.005378326666154862,
+          "sigma_ref": 0.001044402731070097,
+          "sigma_opt": 0.0012881469660436355,
+          "delta": 0.002088805462140194,
+          "D": 4.4906524312864765e-05,
+          "paired_differences": [
+            -0.0019388255921876409,
+            0.00011879180197865973,
+            0.0011889281690309868,
+            0.0008107317184294512
+          ],
+          "paired_t": 0.06439396711069924,
+          "paired_t_p": 0.9527072248124749,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 1500,
+          "end_step": 1599
+        },
+        {
+          "reference_seed_values": [
+            0.005728127115980896,
+            0.004777332454359566,
+            0.004809755418136774,
+            0.004452663868578384
+          ],
+          "candidate_seed_values": [
+            0.0038402120779210238,
+            0.0046429724873814845,
+            0.004221034508263983,
+            0.006171590013927926
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.004941969714263905,
+          "candidate_mean": 0.004718952271873605,
+          "sigma_ref": 0.0005483459122201471,
+          "sigma_opt": 0.0010224212708203947,
+          "delta": 0.0010966918244402941,
+          "D": -0.00022301744239030044,
+          "paired_differences": [
+            -0.0018879150380598725,
+            -0.0001343599669780815,
+            -0.0005887209098727909,
+            0.0017189261453495423
+          ],
+          "paired_t": -0.29880704289569293,
+          "paired_t_p": 0.78459009181321,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 1600,
+          "end_step": 1699
+        },
+        {
+          "reference_seed_values": [
+            0.0063742053829264475,
+            0.004419932087239431,
+            0.005102444911099156,
+            0.0039003245551430155
+          ],
+          "candidate_seed_values": [
+            0.0053040266502284794,
+            0.004924841094980366,
+            0.0073765222482688846,
+            0.004972125848798897
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.004949226734102012,
+          "candidate_mean": 0.005644378960569157,
+          "sigma_ref": 0.0010699514885560866,
+          "sigma_opt": 0.0011670217151047832,
+          "delta": 0.0021399029771121732,
+          "D": 0.0006951522264671446,
+          "paired_differences": [
+            -0.001070178732697968,
+            0.0005049090077409351,
+            0.002274077337169729,
+            0.0010718012936558811
+          ],
+          "paired_t": 1.000983067681262,
+          "paired_t_p": 0.3905959235150368,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 1700,
+          "end_step": 1799
+        },
+        {
+          "reference_seed_values": [
+            0.003712023426669475,
+            0.0037080928044451868,
+            0.004300054461418767,
+            0.0033619408365666457
+          ],
+          "candidate_seed_values": [
+            0.005103207922893489,
+            0.0038924417343878305,
+            0.004525486170896329,
+            0.005095260226771643
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.0037705278822750187,
+          "candidate_mean": 0.004654099013737323,
+          "sigma_ref": 0.0003892996627319777,
+          "sigma_opt": 0.0005753216789179967,
+          "delta": 0.0007785993254639554,
+          "D": 0.0008835711314623042,
+          "paired_differences": [
+            0.0013911844962240143,
+            0.0001843489299426437,
+            0.00022543170947756166,
+            0.0017333193902049973
+          ],
+          "paired_t": 2.219470722743094,
+          "paired_t_p": 0.11309890974646418,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": false,
+          "start_step": 1800,
+          "end_step": 1899
+        },
+        {
+          "reference_seed_values": [
+            0.003924299261507258,
+            0.004749136758982786,
+            0.0048471692032762805,
+            0.004220007643161807
+          ],
+          "candidate_seed_values": [
+            0.0059748021515042635,
+            0.004177098267427936,
+            0.006950972450358677,
+            0.003297173783175822
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.004435153216732032,
+          "candidate_mean": 0.005100011663116675,
+          "sigma_ref": 0.000438026718883684,
+          "sigma_opt": 0.0016626592948017819,
+          "delta": 0.000876053437767368,
+          "D": 0.0006648584463846427,
+          "paired_differences": [
+            0.002050502889997006,
+            -0.0005720384915548493,
+            0.0021038032470823967,
+            -0.0009228338599859853
+          ],
+          "paired_t": 0.8121905557376665,
+          "paired_t_p": 0.47614442714907723,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 1900,
+          "end_step": 1999
+        }
+      ],
+      "failed_windows": 1,
+      "failed_window_start_steps": [
+        1800
+      ],
+      "allowed_failed_windows": 2,
+      "final_window_pass": true,
+      "passes": true,
+      "bias": {
+        "positive_D_windows": 12,
+        "negative_D_windows": 8,
+        "zero_D_ties": 0,
+        "nonzero_windows": 20,
+        "two_sided_binomial_p": 0.5034446716308594,
+        "flag_p_lt_0_01": false,
+        "rule": "exact two-sided Binomial(n_nonzero, 0.5) sign test; exact-zero D ties reported and excluded; descriptive flag only"
+      }
+    },
+    "mse": {
+      "windows": [
+        {
+          "reference_seed_values": [
+            0.31750617042183876,
+            0.32629590526223184,
+            0.3290717925131321,
+            0.31905047357082367
+          ],
+          "candidate_seed_values": [
+            0.3165772086381912,
+            0.3253784967958927,
+            0.3289628790318966,
+            0.31898084700107576
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.3229810854420066,
+          "candidate_mean": 0.32247485786676405,
+          "sigma_ref": 0.005582984483432977,
+          "sigma_opt": 0.005701342415688683,
+          "delta": 0.011165968966865954,
+          "D": -0.000506227575242546,
+          "paired_differences": [
+            -0.0009289617836475417,
+            -0.0009174084663391424,
+            -0.00010891348123553968,
+            -6.962656974790482e-05
+          ],
+          "paired_t": -2.101613861524759,
+          "paired_t_p": 0.1263709240833726,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 0,
+          "end_step": 99
+        },
+        {
+          "reference_seed_values": [
+            0.09663369195535779,
+            0.10890710035338998,
+            0.09654807260259986,
+            0.09721142094582319
+          ],
+          "candidate_seed_values": [
+            0.09537462786771357,
+            0.10741075178608299,
+            0.09589363193139434,
+            0.096344233751297
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.0998250714642927,
+          "candidate_mean": 0.09875581133412198,
+          "sigma_ref": 0.006061849071163003,
+          "sigma_opt": 0.005783544853919233,
+          "delta": 0.012123698142326006,
+          "D": -0.0010692601301707239,
+          "paired_differences": [
+            -0.0012590640876442155,
+            -0.0014963485673069876,
+            -0.000654440671205514,
+            -0.0008671871945261922
+          ],
+          "paired_t": -5.639813836742867,
+          "paired_t_p": 0.011030197638567258,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 100,
+          "end_step": 199
+        },
+        {
+          "reference_seed_values": [
+            0.048448200393468144,
+            0.045812526512891055,
+            0.046951948450878266,
+            0.04695615244098008
+          ],
+          "candidate_seed_values": [
+            0.04820257437881082,
+            0.04611258524470031,
+            0.04973635151050985,
+            0.04411431021057069
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.04704220694955438,
+          "candidate_mean": 0.04704145533614792,
+          "sigma_ref": 0.0010808150498073544,
+          "sigma_opt": 0.0024523214209398536,
+          "delta": 0.0021616300996147087,
+          "D": -7.516134064647351e-07,
+          "paired_differences": [
+            -0.00024562601465732276,
+            0.0003000587318092579,
+            0.002784403059631582,
+            -0.00284184223040939
+          ],
+          "paired_t": -0.0006513371061752205,
+          "paired_t_p": 0.9995211987554129,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 200,
+          "end_step": 299
+        },
+        {
+          "reference_seed_values": [
+            0.034062658962793646,
+            0.03547780224587768,
+            0.032574166059494016,
+            0.032954584374092516
+          ],
+          "candidate_seed_values": [
+            0.0312172540044412,
+            0.03536082267761231,
+            0.04445676726289093,
+            0.03146654666401446
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.03376730291056446,
+          "candidate_mean": 0.03562534765223972,
+          "sigma_ref": 0.0013034735822157117,
+          "sigma_opt": 0.006185759480964363,
+          "delta": 0.0026069471644314234,
+          "D": 0.001858044741675259,
+          "paired_differences": [
+            -0.0028454049583524453,
+            -0.00011697956826537542,
+            0.011882601203396917,
+            -0.0014880377100780565
+          ],
+          "paired_t": 0.5484818011997877,
+          "paired_t_p": 0.6215413110010346,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 300,
+          "end_step": 399
+        },
+        {
+          "reference_seed_values": [
+            0.026553131295368074,
+            0.02768797873519361,
+            0.03312894749455154,
+            0.02451180327683687
+          ],
+          "candidate_seed_values": [
+            0.023629021411761642,
+            0.027141189137473702,
+            0.03520565644837916,
+            0.022089745774865152
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.027970465200487522,
+          "candidate_mean": 0.027016403193119914,
+          "sigma_ref": 0.003681526670733133,
+          "sigma_opt": 0.005854506784241951,
+          "delta": 0.007363053341466266,
+          "D": -0.0009540620073676086,
+          "paired_differences": [
+            -0.002924109883606432,
+            -0.0005467895977199072,
+            0.0020767089538276245,
+            -0.0024220575019717194
+          ],
+          "paired_t": -0.8425245941096615,
+          "paired_t_p": 0.46136143531633456,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 400,
+          "end_step": 499
+        },
+        {
+          "reference_seed_values": [
+            0.024189338497817518,
+            0.02257883183658123,
+            0.028695422941818833,
+            0.027334114741533994
+          ],
+          "candidate_seed_values": [
+            0.023686960418708623,
+            0.021884231781587004,
+            0.024495474193245173,
+            0.02159884082619101
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.02569942700443789,
+          "candidate_mean": 0.022916376804932952,
+          "sigma_ref": 0.002808717213372965,
+          "sigma_opt": 0.001401020113118931,
+          "delta": 0.00561743442674593,
+          "D": -0.002783050199504939,
+          "paired_differences": [
+            -0.0005023780791088943,
+            -0.0006946000549942245,
+            -0.00419994874857366,
+            -0.0057352739153429845
+          ],
+          "paired_t": -2.1404745733579755,
+          "paired_t_p": 0.12179842323819753,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 500,
+          "end_step": 599
+        },
+        {
+          "reference_seed_values": [
+            0.01815199556061998,
+            0.020700545739382504,
+            0.025656413482502104,
+            0.01641550356987864
+          ],
+          "candidate_seed_values": [
+            0.017975106961093845,
+            0.0192775015020743,
+            0.02225469898432493,
+            0.013473746988456697
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.020231114588095806,
+          "candidate_mean": 0.01824526360898744,
+          "sigma_ref": 0.0040222654094509485,
+          "sigma_opt": 0.0036506365915793515,
+          "delta": 0.008044530818901897,
+          "D": -0.0019858509791083646,
+          "paired_differences": [
+            -0.00017688859952613711,
+            -0.0014230442373082026,
+            -0.0034017144981771733,
+            -0.002941756581421942
+          ],
+          "paired_t": -2.6966803945388196,
+          "paired_t_p": 0.073993818270053,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 600,
+          "end_step": 699
+        },
+        {
+          "reference_seed_values": [
+            0.016091527389362453,
+            0.01847083552274853,
+            0.01577952363528311,
+            0.01575812547001988
+          ],
+          "candidate_seed_values": [
+            0.019192520352080463,
+            0.01618766153231263,
+            0.015267663430422544,
+            0.013207337642088533
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.016525003004353493,
+          "candidate_mean": 0.015963795739226044,
+          "sigma_ref": 0.0013061401074426142,
+          "sigma_opt": 0.0024871295336593175,
+          "delta": 0.0026122802148852283,
+          "D": -0.0005612072651274488,
+          "paired_differences": [
+            0.00310099296271801,
+            -0.0022831739904358994,
+            -0.0005118602048605671,
+            -0.0025507878279313455
+          ],
+          "paired_t": -0.4310845911438253,
+          "paired_t_p": 0.6955050285766963,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 700,
+          "end_step": 799
+        },
+        {
+          "reference_seed_values": [
+            0.01385861953953281,
+            0.01609987998381257,
+            0.013412647168152034,
+            0.014670747194904833
+          ],
+          "candidate_seed_values": [
+            0.012357365689240396,
+            0.013316112761385739,
+            0.013783678315812722,
+            0.009472189964726567
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.014510473471600562,
+          "candidate_mean": 0.012232336682791356,
+          "sigma_ref": 0.0011806829758998821,
+          "sigma_opt": 0.0019335005912055193,
+          "delta": 0.0023613659517997643,
+          "D": -0.0022781367888092055,
+          "paired_differences": [
+            -0.0015012538502924139,
+            -0.0027837672224268317,
+            0.00037103114766068833,
+            -0.0051985572301782666
+          ],
+          "paired_t": -1.9483501443073878,
+          "paired_t_p": 0.14650988595804174,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 800,
+          "end_step": 899
+        },
+        {
+          "reference_seed_values": [
+            0.011468566572293639,
+            0.014304473167285323,
+            0.012819389728829265,
+            0.014269193755462766
+          ],
+          "candidate_seed_values": [
+            0.01236681290436536,
+            0.012492454063612967,
+            0.012548276439774781,
+            0.010372749441303312
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.013215405805967749,
+          "candidate_mean": 0.011945073212264106,
+          "sigma_ref": 0.0013545986861605225,
+          "sigma_opt": 0.0010509592980898817,
+          "delta": 0.002709197372321045,
+          "D": -0.0012703325937036426,
+          "paired_differences": [
+            0.0008982463320717209,
+            -0.0018120191036723552,
+            -0.0002711132890544834,
+            -0.0038964443141594543
+          ],
+          "paired_t": -1.225642284131473,
+          "paired_t_p": 0.30777495565399976,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 900,
+          "end_step": 999
+        },
+        {
+          "reference_seed_values": [
+            0.011994230702985078,
+            0.011044363949913531,
+            0.010314677429851144,
+            0.013155164178460837
+          ],
+          "candidate_seed_values": [
+            0.01096320803044364,
+            0.009396430209744722,
+            0.009946192128118127,
+            0.00879777042195201
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.011627109065302647,
+          "candidate_mean": 0.009775900197564625,
+          "sigma_ref": 0.001229064602715862,
+          "sigma_opt": 0.0009200424919939879,
+          "delta": 0.002458129205431724,
+          "D": -0.001851208867738022,
+          "paired_differences": [
+            -0.0010310226725414387,
+            -0.001647933740168809,
+            -0.00036848530173301704,
+            -0.004357393756508827
+          ],
+          "paired_t": -2.1149816117088807,
+          "paired_t_p": 0.12477528445588584,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 1000,
+          "end_step": 1099
+        },
+        {
+          "reference_seed_values": [
+            0.01006303544389084,
+            0.009194829426705837,
+            0.008982991557568312,
+            0.009444434279575944
+          ],
+          "candidate_seed_values": [
+            0.00989431217778474,
+            0.009987227842211724,
+            0.008794001373462378,
+            0.0071950271585956216
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.009421322676935233,
+          "candidate_mean": 0.008967642138013616,
+          "sigma_ref": 0.0004675335225255253,
+          "sigma_opt": 0.0013000752992532861,
+          "delta": 0.0009350670450510506,
+          "D": -0.0004536805389216171,
+          "paired_differences": [
+            -0.0001687232661060998,
+            0.0007923984155058864,
+            -0.00018899018410593361,
+            -0.0022494071209803223
+          ],
+          "paired_t": -0.7079109319261905,
+          "paired_t_p": 0.5300436085086275,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 1100,
+          "end_step": 1199
+        },
+        {
+          "reference_seed_values": [
+            0.008064544857479632,
+            0.009297094927169382,
+            0.006760356891900301,
+            0.010282226875424384
+          ],
+          "candidate_seed_values": [
+            0.008769322687294334,
+            0.009414546662010253,
+            0.00673922392190434,
+            0.008257178799249231
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.008601055887993425,
+          "candidate_mean": 0.00829506801761454,
+          "sigma_ref": 0.0015260868381930062,
+          "sigma_opt": 0.0011402099762756826,
+          "delta": 0.0030521736763860123,
+          "D": -0.0003059878703788859,
+          "paired_differences": [
+            0.0007047778298147015,
+            0.0001174517348408715,
+            -2.1132969995961252e-05,
+            -0.0020250480761751528
+          ],
+          "paired_t": -0.5149349193967057,
+          "paired_t_p": 0.6421365165212964,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 1200,
+          "end_step": 1299
+        },
+        {
+          "reference_seed_values": [
+            0.007889203533995897,
+            0.008023382159881293,
+            0.00836194826522842,
+            0.008969643134623766
+          ],
+          "candidate_seed_values": [
+            0.006738169421441853,
+            0.008226739068049937,
+            0.008181488374248147,
+            0.00769636042881757
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.008311044273432345,
+          "candidate_mean": 0.007710689323139377,
+          "sigma_ref": 0.0004820244728795277,
+          "sigma_opt": 0.0006913656442523545,
+          "delta": 0.0009640489457590554,
+          "D": -0.0006003549502929676,
+          "paired_differences": [
+            -0.0011510341125540438,
+            0.00020335690816864448,
+            -0.00018045989098027307,
+            -0.0012732827058061962
+          ],
+          "paired_t": -1.6553807429417695,
+          "paired_t_p": 0.1964226695712095,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 1300,
+          "end_step": 1399
+        },
+        {
+          "reference_seed_values": [
+            0.009740082332864403,
+            0.008985263390932231,
+            0.007458800041349605,
+            0.00951260914793238
+          ],
+          "candidate_seed_values": [
+            0.007461694779340178,
+            0.009122437715996056,
+            0.00660942871356383,
+            0.008467016108334065
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.008924188728269654,
+          "candidate_mean": 0.007915144329308533,
+          "sigma_ref": 0.001026809797782641,
+          "sigma_opt": 0.0011064401694308205,
+          "delta": 0.002053619595565282,
+          "D": -0.0010090443989611217,
+          "paired_differences": [
+            -0.0022783875535242254,
+            0.00013717432506382514,
+            -0.0008493713277857749,
+            -0.0010455930395983151
+          ],
+          "paired_t": -2.034470974867917,
+          "paired_t_p": 0.1347621319406299,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 1400,
+          "end_step": 1499
+        },
+        {
+          "reference_seed_values": [
+            0.008261733422987163,
+            0.008389563834061847,
+            0.008767584033776074,
+            0.009476385316811503
+          ],
+          "candidate_seed_values": [
+            0.00718016171362251,
+            0.008899307519895957,
+            0.007943472161423415,
+            0.00911274716258049
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.008723816651909147,
+          "candidate_mean": 0.008283922139380593,
+          "sigma_ref": 0.0005457475105450099,
+          "sigma_opt": 0.0008943980006304159,
+          "delta": 0.0010914950210900198,
+          "D": -0.000439894512528554,
+          "paired_differences": [
+            -0.0010815717093646529,
+            0.00050974368583411,
+            -0.0008241118723526595,
+            -0.00036363815423101284
+          ],
+          "paired_t": -1.2581257742740615,
+          "paired_t_p": 0.2973583770114861,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 1500,
+          "end_step": 1599
+        },
+        {
+          "reference_seed_values": [
+            0.0077051503560505805,
+            0.008855447450187057,
+            0.007257645046338439,
+            0.008165561489295214
+          ],
+          "candidate_seed_values": [
+            0.006339260630775243,
+            0.006806814556475729,
+            0.007657411947147921,
+            0.011327136247418821
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.007995951085467823,
+          "candidate_mean": 0.008032655845454428,
+          "sigma_ref": 0.0006824374358861497,
+          "sigma_opt": 0.0022630866326772275,
+          "delta": 0.0013648748717722994,
+          "D": 3.670475998660515e-05,
+          "paired_differences": [
+            -0.0013658897252753375,
+            -0.002048632893711328,
+            0.0003997669008094819,
+            0.0031615747581236076
+          ],
+          "paired_t": 0.031578216740818295,
+          "paired_t_p": 0.9767918313075358,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 1600,
+          "end_step": 1699
+        },
+        {
+          "reference_seed_values": [
+            0.010042620815802365,
+            0.006066039614379406,
+            0.006992192668840289,
+            0.0071643741196021436
+          ],
+          "candidate_seed_values": [
+            0.008069285221863539,
+            0.006866297043161467,
+            0.008888081728946418,
+            0.010769101786427199
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.007566306804656051,
+          "candidate_mean": 0.008648191445099656,
+          "sigma_ref": 0.0017198924044135482,
+          "sigma_opt": 0.00163972437716367,
+          "delta": 0.0034397848088270964,
+          "D": 0.0010818846404436052,
+          "paired_differences": [
+            -0.0019733355939388266,
+            0.0008002574287820606,
+            0.0018958890601061288,
+            0.0036047276668250555
+          ],
+          "paired_t": 0.9242876225588763,
+          "paired_t_p": 0.4235082455087131,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 1700,
+          "end_step": 1799
+        },
+        {
+          "reference_seed_values": [
+            0.008782950362656266,
+            0.007440766413928941,
+            0.010361089836806059,
+            0.007973004344385116
+          ],
+          "candidate_seed_values": [
+            0.00695508775068447,
+            0.007889197829645127,
+            0.009764322701375932,
+            0.010470149153843523
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.008639452739444095,
+          "candidate_mean": 0.008769689358887263,
+          "sigma_ref": 0.0012735289858151614,
+          "sigma_opt": 0.0016277697758807074,
+          "delta": 0.0025470579716303228,
+          "D": 0.0001302366194431675,
+          "paired_differences": [
+            -0.0018278626119717957,
+            0.0004484314157161863,
+            -0.000596767135430127,
+            0.0024971448094584063
+          ],
+          "paired_t": 0.14219724741448866,
+          "paired_t_p": 0.8959369230650592,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 1800,
+          "end_step": 1899
+        },
+        {
+          "reference_seed_values": [
+            0.00874042087700218,
+            0.007149372703861445,
+            0.007560491827316582,
+            0.005915714371949435
+          ],
+          "candidate_seed_values": [
+            0.007528645240236074,
+            0.00854309344664216,
+            0.007046518293209374,
+            0.007800896358676254
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.00734149994503241,
+          "candidate_mean": 0.0077297883346909655,
+          "sigma_ref": 0.001165434768033093,
+          "sigma_opt": 0.0006255232610207723,
+          "delta": 0.002330869536066186,
+          "D": 0.0003882883896585551,
+          "paired_differences": [
+            -0.001211775636766106,
+            0.0013937207427807156,
+            -0.0005139735341072081,
+            0.0018851819867268197
+          ],
+          "paired_t": 0.5225450034454457,
+          "paired_t_p": 0.6374253685416773,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 1900,
+          "end_step": 1999
+        }
+      ],
+      "failed_windows": 0,
+      "failed_window_start_steps": [],
+      "allowed_failed_windows": 2,
+      "final_window_pass": true,
+      "passes": true,
+      "bias": {
+        "positive_D_windows": 5,
+        "negative_D_windows": 15,
+        "zero_D_ties": 0,
+        "nonzero_windows": 20,
+        "two_sided_binomial_p": 0.04138946533203125,
+        "flag_p_lt_0_01": false,
+        "rule": "exact two-sided Binomial(n_nonzero, 0.5) sign test; exact-zero D ties reported and excluded; descriptive flag only"
+      }
+    },
+    "log_grad_norm": {
+      "windows": [
+        {
+          "reference_seed_values": [
+            1.8201990731859587,
+            1.7453567214956234,
+            1.8025036753034716,
+            1.7181599213969725
+          ],
+          "candidate_seed_values": [
+            1.8168759408172555,
+            1.7270579548123226,
+            1.7735702853296247,
+            1.7347034226034053
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 1.7715548478455065,
+          "candidate_mean": 1.763051900890652,
+          "sigma_ref": 0.04782415907845596,
+          "sigma_opt": 0.041258793247495776,
+          "delta": 0.09564831815691192,
+          "D": -0.00850294695485454,
+          "paired_differences": [
+            -0.0033231323687032965,
+            -0.01829876668330077,
+            -0.028933389973846868,
+            0.016543501206432776
+          ],
+          "paired_t": -0.8620424409477949,
+          "paired_t_p": 0.4520621579050561,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 0,
+          "end_step": 99
+        },
+        {
+          "reference_seed_values": [
+            1.3469048359484117,
+            1.3964931433168466,
+            1.3644907226663832,
+            1.2733750997237694
+          ],
+          "candidate_seed_values": [
+            1.382476103296628,
+            1.338135002728917,
+            1.354515639420348,
+            1.3198526686301926
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 1.3453159504138528,
+          "candidate_mean": 1.3487448535190214,
+          "sigma_ref": 0.05216891641460284,
+          "sigma_opt": 0.026573335400464755,
+          "delta": 0.10433783282920568,
+          "D": 0.0034289031051686347,
+          "paired_differences": [
+            0.03557126734821625,
+            -0.05835814058792965,
+            -0.009975083246035243,
+            0.04647756890642318
+          ],
+          "paired_t": 0.14316512600290515,
+          "paired_t_p": 0.895234989452633,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 100,
+          "end_step": 199
+        },
+        {
+          "reference_seed_values": [
+            0.8944399416860226,
+            0.9375321472088313,
+            0.9059923435667355,
+            0.9488289488020811
+          ],
+          "candidate_seed_values": [
+            1.0491958151193737,
+            0.936048302589088,
+            0.9147826573383894,
+            0.8800233679408574
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.9216983453159177,
+          "candidate_mean": 0.9450125357469271,
+          "sigma_ref": 0.025667605960971174,
+          "sigma_opt": 0.07319369430405373,
+          "delta": 0.05133521192194235,
+          "D": 0.023314190431009463,
+          "paired_differences": [
+            0.15475587343335107,
+            -0.0014838446197432686,
+            0.008790313771653846,
+            -0.06880558086122368
+          ],
+          "paired_t": 0.4952918186322998,
+          "paired_t_p": 0.6544012548204475,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 200,
+          "end_step": 299
+        },
+        {
+          "reference_seed_values": [
+            0.37000397103590027,
+            0.5062920160668485,
+            0.3833893534961241,
+            0.44122588346353436
+          ],
+          "candidate_seed_values": [
+            0.4816066485127808,
+            0.4356995571473737,
+            0.4705442385698106,
+            0.39302715699245333
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.4252278060156018,
+          "candidate_mean": 0.4452194003056046,
+          "sigma_ref": 0.062256118018907965,
+          "sigma_opt": 0.03991673392206723,
+          "delta": 0.12451223603781593,
+          "D": 0.0199915942900028,
+          "paired_differences": [
+            0.11160267747688052,
+            -0.0705924589194748,
+            0.08715488507368652,
+            -0.04819872647108103
+          ],
+          "paired_t": 0.43149373166363936,
+          "paired_t_p": 0.6952383610525569,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 300,
+          "end_step": 399
+        },
+        {
+          "reference_seed_values": [
+            0.10235737446703112,
+            0.06800317017824292,
+            0.21729253743988802,
+            0.13477324651641634
+          ],
+          "candidate_seed_values": [
+            0.2807297916147734,
+            0.1580600474917649,
+            0.17092952850095033,
+            0.03938580310754044
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": 0.1306065821503946,
+          "candidate_mean": 0.16227629267875726,
+          "sigma_ref": 0.0638984112000809,
+          "sigma_opt": 0.09870150125658246,
+          "delta": 0.1277968224001618,
+          "D": 0.03166971052836265,
+          "paired_differences": [
+            0.17837241714774227,
+            0.09005687731352197,
+            -0.04636300893893769,
+            -0.0953874434088759
+          ],
+          "paired_t": 0.5051638881104638,
+          "paired_t_p": 0.6482186511594135,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 400,
+          "end_step": 499
+        },
+        {
+          "reference_seed_values": [
+            -0.07167429887821015,
+            -0.01860879031581361,
+            -0.01507502427362476,
+            0.05138263426815943
+          ],
+          "candidate_seed_values": [
+            -0.07071278018573098,
+            -0.022086375061644993,
+            -0.059273762998276656,
+            0.009284874977322612
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": -0.013493869799872275,
+          "candidate_mean": -0.0356970108170825,
+          "sigma_ref": 0.05040696238015506,
+          "sigma_opt": 0.036471846691111955,
+          "delta": 0.10081392476031012,
+          "D": -0.022203141017210225,
+          "paired_differences": [
+            0.0009615186924791796,
+            -0.0034775847458313816,
+            -0.044198738724651895,
+            -0.04209775929083682
+          ],
+          "paired_t": -1.8298066053687099,
+          "paired_t_p": 0.16470152308414235,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 500,
+          "end_step": 599
+        },
+        {
+          "reference_seed_values": [
+            -0.2794623426359731,
+            -0.22021195555734688,
+            -0.03564657845732813,
+            -0.16895056269922715
+          ],
+          "candidate_seed_values": [
+            -0.18783030623115754,
+            -0.09834451447884461,
+            -0.1353849846461432,
+            -0.2300164293067219
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": -0.1760678598374688,
+          "candidate_mean": -0.16289405866571682,
+          "sigma_ref": 0.10393573726601552,
+          "sigma_opt": 0.05788097526032987,
+          "delta": 0.20787147453203103,
+          "D": 0.013173801171751987,
+          "paired_differences": [
+            0.09163203640481554,
+            0.12186744107850227,
+            -0.09973840618881508,
+            -0.061065866607494745
+          ],
+          "paired_t": 0.23975263211350334,
+          "paired_t_p": 0.8259697362371291,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 600,
+          "end_step": 699
+        },
+        {
+          "reference_seed_values": [
+            -0.3039813000743476,
+            -0.20157451836515797,
+            -0.262255950165233,
+            -0.23468004083902333
+          ],
+          "candidate_seed_values": [
+            -0.1535640892928591,
+            -0.3127763889924091,
+            -0.3644326350930609,
+            -0.3477957219752912
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": -0.25062295236094045,
+          "candidate_mean": -0.2946422088384051,
+          "sigma_ref": 0.04336805742269244,
+          "sigma_opt": 0.0964846859350659,
+          "delta": 0.08673611484538488,
+          "D": -0.04401925647746463,
+          "paired_differences": [
+            0.15041721078148848,
+            -0.11120187062725115,
+            -0.10217668492782789,
+            -0.11311568113626785
+          ],
+          "paired_t": -0.6787227140933874,
+          "paired_t_p": 0.5459828002913414,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 700,
+          "end_step": 799
+        },
+        {
+          "reference_seed_values": [
+            -0.30988710566851985,
+            -0.3308609526169695,
+            -0.4119306778124171,
+            -0.3703515591697023
+          ],
+          "candidate_seed_values": [
+            -0.2893138300358252,
+            -0.34155133562411977,
+            -0.3529637287827951,
+            -0.5119723864546952
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": -0.3557575738169022,
+          "candidate_mean": -0.3739503202243588,
+          "sigma_ref": 0.045064189834403155,
+          "sigma_opt": 0.09609640551964255,
+          "delta": 0.09012837966880631,
+          "D": -0.018192746407456606,
+          "paired_differences": [
+            0.02057327563269462,
+            -0.01069038300715025,
+            0.05896694902962202,
+            -0.14162082728499292
+          ],
+          "paired_t": -0.4178543416226085,
+          "paired_t_p": 0.7041597989797489,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 800,
+          "end_step": 899
+        },
+        {
+          "reference_seed_values": [
+            -0.4227627928808435,
+            -0.42351204769929196,
+            -0.4683749225118337,
+            -0.3807457360628209
+          ],
+          "candidate_seed_values": [
+            -0.33490566373928815,
+            -0.5743096592402024,
+            -0.48669704639161215,
+            -0.5018443930005224
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": -0.42384887478869754,
+          "candidate_mean": -0.4744391905929063,
+          "sigma_ref": 0.03578520420631917,
+          "sigma_opt": 0.10057338244920837,
+          "delta": 0.07157040841263834,
+          "D": -0.05059031580420875,
+          "paired_differences": [
+            0.08785712914155536,
+            -0.15079761154091043,
+            -0.01832212387977844,
+            -0.1210986569377015
+          ],
+          "paired_t": -0.9337957075357374,
+          "paired_t_p": 0.4192931289286268,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 900,
+          "end_step": 999
+        },
+        {
+          "reference_seed_values": [
+            -0.38635275674493763,
+            -0.40283410681041365,
+            -0.39169832516389086,
+            -0.38084328804335493
+          ],
+          "candidate_seed_values": [
+            -0.3699838632947213,
+            -0.5024032173149745,
+            -0.4889930384994575,
+            -0.5028365772455539
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": -0.39043211919064924,
+          "candidate_mean": -0.4660541740886768,
+          "sigma_ref": 0.009380821840724939,
+          "sigma_opt": 0.06436845563360384,
+          "delta": 0.018761643681449877,
+          "D": -0.07562205489802754,
+          "paired_differences": [
+            0.016368893450216304,
+            -0.09956911050456085,
+            -0.09729471333556666,
+            -0.12199328920219893
+          ],
+          "paired_t": -2.426432484148136,
+          "paired_t_p": 0.09362825301940349,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": false,
+          "start_step": 1000,
+          "end_step": 1099
+        },
+        {
+          "reference_seed_values": [
+            -0.452736497076561,
+            -0.5229395522436568,
+            -0.4557237752368449,
+            -0.4711300360141536
+          ],
+          "candidate_seed_values": [
+            -0.420545795652787,
+            -0.32658482726861565,
+            -0.5017344264803818,
+            -0.5890589015904014
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": -0.4756324651428041,
+          "candidate_mean": -0.45948098774804647,
+          "sigma_ref": 0.03255156752747992,
+          "sigma_opt": 0.11218010443644238,
+          "delta": 0.06510313505495983,
+          "D": 0.01615147739475764,
+          "paired_differences": [
+            0.032190701423774004,
+            0.1963547249750412,
+            -0.046010651243536926,
+            -0.11792886557624782
+          ],
+          "paired_t": 0.2395065536276056,
+          "paired_t_p": 0.8261438987875164,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 1100,
+          "end_step": 1199
+        },
+        {
+          "reference_seed_values": [
+            -0.40694884119084285,
+            -0.5172878315816893,
+            -0.5963115408356159,
+            -0.5202675569482866
+          ],
+          "candidate_seed_values": [
+            -0.44834617362373563,
+            -0.5303262545887619,
+            -0.6932540555733427,
+            -0.5359401126242522
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": -0.5102039426391087,
+          "candidate_mean": -0.5519666491025231,
+          "sigma_ref": 0.07794782925730412,
+          "sigma_opt": 0.1023466181038748,
+          "delta": 0.15589565851460824,
+          "D": -0.0417627064634144,
+          "paired_differences": [
+            -0.041397332432892786,
+            -0.013038423007072586,
+            -0.09694251473772686,
+            -0.015672555675965594
+          ],
+          "paired_t": -2.1445637204215138,
+          "paired_t_p": 0.12132885667602193,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 1200,
+          "end_step": 1299
+        },
+        {
+          "reference_seed_values": [
+            -0.5827930327526968,
+            -0.6817111658772366,
+            -0.5718443197644285,
+            -0.5681781048099467
+          ],
+          "candidate_seed_values": [
+            -0.5573404478563064,
+            -0.4702744298993131,
+            -0.43405215151662463,
+            -0.5842471114443397
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": -0.6011316558010771,
+          "candidate_mean": -0.511478535179146,
+          "sigma_ref": 0.05407725065272543,
+          "sigma_opt": 0.07092532200617377,
+          "delta": 0.10815450130545086,
+          "D": 0.08965312062193109,
+          "paired_differences": [
+            0.02545258489639035,
+            0.21143673597792345,
+            0.13779216824780388,
+            -0.016069006634393035
+          ],
+          "paired_t": 1.7241119204723707,
+          "paired_t_p": 0.18315580082870508,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 1300,
+          "end_step": 1399
+        },
+        {
+          "reference_seed_values": [
+            -0.641329587478994,
+            -0.672936833616558,
+            -0.5642571549382738,
+            -0.5859228840414809
+          ],
+          "candidate_seed_values": [
+            -0.5109117644234441,
+            -0.587261353171477,
+            -0.5748427715329986,
+            -0.6459771015975151
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": -0.6161116150188266,
+          "candidate_mean": -0.5797482476813587,
+          "sigma_ref": 0.04988418624490772,
+          "sigma_opt": 0.05539323956558994,
+          "delta": 0.09976837248981545,
+          "D": 0.03636336733746792,
+          "paired_differences": [
+            0.13041782305554994,
+            0.085675480445081,
+            -0.01058561659472479,
+            -0.06005421755603424
+          ],
+          "paired_t": 0.8346267853719053,
+          "paired_t_p": 0.46517158723549457,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 1400,
+          "end_step": 1499
+        },
+        {
+          "reference_seed_values": [
+            -0.5568708719027323,
+            -0.6086309176446717,
+            -0.6664112523823345,
+            -0.6883292253389706
+          ],
+          "candidate_seed_values": [
+            -0.48349702559693775,
+            -0.5289690292845806,
+            -0.5953142922148285,
+            -0.7295016349139645
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": -0.6300605668171773,
+          "candidate_mean": -0.5843204955025778,
+          "sigma_ref": 0.05925248296432389,
+          "sigma_opt": 0.10712544625069928,
+          "delta": 0.11850496592864777,
+          "D": 0.04574007131459945,
+          "paired_differences": [
+            0.07337384630579458,
+            0.07966188836009114,
+            0.071096960167506,
+            -0.04117240957499391
+          ],
+          "paired_t": 1.5757560401044182,
+          "paired_t_p": 0.21316635784442511,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 1500,
+          "end_step": 1599
+        },
+        {
+          "reference_seed_values": [
+            -0.6312349122803894,
+            -0.572674555185709,
+            -0.6408369550470863,
+            -0.7206969388018963
+          ],
+          "candidate_seed_values": [
+            -0.701688065778835,
+            -0.7148412578608128,
+            -0.6623603358380733,
+            -0.4705615697862393
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": -0.6413608403287703,
+          "candidate_mean": -0.63736280731599,
+          "sigma_ref": 0.060868248872245456,
+          "sigma_opt": 0.11341395923607617,
+          "delta": 0.12173649774449091,
+          "D": 0.003998033012780233,
+          "paired_differences": [
+            -0.07045315349844561,
+            -0.14216670267510378,
+            -0.021523380790987034,
+            0.250135369015657
+          ],
+          "paired_t": 0.04664933426878757,
+          "paired_t_p": 0.9657244046588133,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 1600,
+          "end_step": 1699
+        },
+        {
+          "reference_seed_values": [
+            -0.5135884002038332,
+            -0.8523069756420435,
+            -0.6511452869301625,
+            -0.6997660760141307
+          ],
+          "candidate_seed_values": [
+            -0.6755664827161513,
+            -0.7295630097572751,
+            -0.5137761795465334,
+            -0.40773159347217053
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": -0.6792016846975425,
+          "candidate_mean": -0.5816593163730326,
+          "sigma_ref": 0.13976558636955647,
+          "sigma_opt": 0.14782087298053054,
+          "delta": 0.27953117273911293,
+          "D": 0.09754236832450991,
+          "paired_differences": [
+            -0.16197808251231804,
+            0.12274396588476844,
+            0.13736910738362906,
+            0.2920344825419601
+          ],
+          "paired_t": 1.0310580557178128,
+          "paired_t_p": 0.37835819054890923,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 1700,
+          "end_step": 1799
+        },
+        {
+          "reference_seed_values": [
+            -0.7713788251933796,
+            -0.754302443776661,
+            -0.43172552868731634,
+            -0.7413858222204258
+          ],
+          "candidate_seed_values": [
+            -0.7072939976422377,
+            -0.7215492474916019,
+            -0.6237722579467502,
+            -0.5792134130592516
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": -0.6746981549694457,
+          "candidate_mean": -0.6579572290349603,
+          "sigma_ref": 0.1624468496434699,
+          "sigma_opt": 0.06793934145180762,
+          "delta": 0.3248936992869398,
+          "D": 0.016740925934485396,
+          "paired_differences": [
+            0.06408482755114198,
+            0.03275319628505913,
+            -0.19204672925943383,
+            0.16217240916117426
+          ],
+          "paired_t": 0.22364275191721159,
+          "paired_t_p": 0.8373993267861928,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 1800,
+          "end_step": 1899
+        },
+        {
+          "reference_seed_values": [
+            -0.6481889850440848,
+            -0.7468934024128455,
+            -0.6094338991810548,
+            -0.8949452096606402
+          ],
+          "candidate_seed_values": [
+            -0.6810843783650097,
+            -0.7593871246029391,
+            -0.6073283324786134,
+            -0.7152245662718886
+          ],
+          "n_reference": 4,
+          "n_candidate": 4,
+          "defined": true,
+          "reference_mean": -0.7248653740746563,
+          "candidate_mean": -0.6907561004296127,
+          "sigma_ref": 0.12730027302445593,
+          "sigma_opt": 0.06419412738648048,
+          "delta": 0.25460054604891186,
+          "D": 0.03410927364504368,
+          "paired_differences": [
+            -0.03289539332092484,
+            -0.012493722190093592,
+            0.0021055667024414415,
+            0.1797206433887516
+          ],
+          "paired_t": 0.6951868583689274,
+          "paired_t_p": 0.5369464307125024,
+          "paired_t_df": 3,
+          "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+          "consistent": true,
+          "start_step": 1900,
+          "end_step": 1999
+        }
+      ],
+      "failed_windows": 1,
+      "failed_window_start_steps": [
+        1000
+      ],
+      "allowed_failed_windows": 2,
+      "final_window_pass": true,
+      "passes": true,
+      "bias": {
+        "positive_D_windows": 13,
+        "negative_D_windows": 7,
+        "zero_D_ties": 0,
+        "nonzero_windows": 20,
+        "two_sided_binomial_p": 0.26317596435546875,
+        "flag_p_lt_0_01": false,
+        "rule": "exact two-sided Binomial(n_nonzero, 0.5) sign test; exact-zero D ties reported and excluded; descriptive flag only"
+      }
+    }
+  },
+  "pooled_heldout": {
+    "model": {
+      "reference_seed_values": [
+        1.347595500041376,
+        1.368135900975011,
+        1.3055564423045294,
+        1.2961914596623412
+      ],
+      "candidate_seed_values": [
+        1.3854705109612702,
+        1.3179267561079788,
+        1.2776161372569421,
+        1.3881602693542765
+      ],
+      "n_reference": 4,
+      "n_candidate": 4,
+      "defined": true,
+      "reference_mean": 1.3293698257458144,
+      "candidate_mean": 1.342293418420117,
+      "sigma_ref": 0.03417047945763639,
+      "sigma_opt": 0.053990475289066385,
+      "delta": 0.06834095891527278,
+      "D": 0.012923592674302542,
+      "paired_differences": [
+        0.0378750109198942,
+        -0.050209144867032096,
+        -0.027940305047587266,
+        0.09196880969193533
+      ],
+      "paired_t": 0.40000196830706963,
+      "paired_t_p": 0.7159338498756419,
+      "paired_t_df": 3,
+      "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+      "consistent": true
+    },
+    "ema": {
+      "reference_seed_values": [
+        0.7442330625517496,
+        0.7460683048501712,
+        0.7451792064909278,
+        0.7440612431129491
+      ],
+      "candidate_seed_values": [
+        0.7430454491009195,
+        0.7433658876841057,
+        0.7426980477217703,
+        0.7439916232429986
+      ],
+      "n_reference": 4,
+      "n_candidate": 4,
+      "defined": true,
+      "reference_mean": 0.7448854542514494,
+      "candidate_mean": 0.7432752519374486,
+      "sigma_ref": 0.0009292227662156246,
+      "sigma_opt": 0.0005499626460833969,
+      "delta": 0.0018584455324312493,
+      "D": -0.0016102023140007748,
+      "paired_differences": [
+        -0.0011876134508300717,
+        -0.0027024171660654517,
+        -0.0024811587691575543,
+        -6.961986995046576e-05
+      ],
+      "paired_t": -2.6284349749471545,
+      "paired_t_p": 0.07843050069091,
+      "paired_t_df": 3,
+      "paired_t_note": "two-sided paired Student t-test, four seed pairs; descriptive, not a pass check",
+      "consistent": true
+    }
+  },
+  "stability_all_finite": true,
+  "data_and_run_integrity": true,
+  "all_pooled_metrics_pass": true,
+  "pooled_verdict": "CONSISTENT",
+  "release_eligible": true,
+  "bias_flags": [],
+  "reporter_sha256": "acecbab2f2848008c4fbe4aaf56d352e78251eea3b8686a1b96c56dad7f5df4c",
+  "statistics_sha256": "96b54f37f459092d8b1878b38599ee708d36e8da8cec494a96d685e2cbe8a407",
+  "data_caveat": "t2i/edit examples repeat fixtures; only image-content-disjoint VLM held-out CE is a generalization check",
+  "no_training_reruns": true
+}
