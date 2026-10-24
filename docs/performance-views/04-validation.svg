@@ -2475,7 +2475,7 @@ L 250.866563 108.556594
 " style="fill: none; stroke: #a99a9c; stroke-width: 2.4; stroke-linecap: square"/>
     </g>
     <g id="text_16">
-     <text style="fill: #292122; font: 9px 'DejaVu Sans'; text-anchor: start" x="258.066563" y="111.706594" transform="rotate(-0 258.066563 111.706594)">Reference, mean of 4 seeds</text>
+     <text style="fill: #292122; font: 9px 'DejaVu Sans'; text-anchor: start" x="258.066563" y="111.706594" transform="rotate(-0 258.066563 111.706594)">Baseline, mean of 4 seeds</text>
     </g>
     <g id="line2d_70">
      <path d="M 232.866563 121.766906
@@ -4793,7 +4793,7 @@ L 682.866562 108.556594
 " style="fill: none; stroke: #a99a9c; stroke-width: 2.4; stroke-linecap: square"/>
     </g>
     <g id="text_31">
-     <text style="fill: #292122; font: 9px 'DejaVu Sans'; text-anchor: start" x="690.066563" y="111.706594" transform="rotate(-0 690.066563 111.706594)">Reference, mean of 4 seeds</text>
+     <text style="fill: #292122; font: 9px 'DejaVu Sans'; text-anchor: start" x="690.066563" y="111.706594" transform="rotate(-0 690.066563 111.706594)">Baseline, mean of 4 seeds</text>
     </g>
     <g id="line2d_123">
      <path d="M 664.866562 121.766906
@@ -5205,7 +5205,7 @@ z
     </g>
    </g>
    <g id="text_52">
-    <text style="fill: #292122; font: 700 11.5px 'DejaVu Sans'; text-anchor: start" x="60.48" y="385.984" transform="rotate(-0 60.48 385.984)">Pooled difference per 100-step window, D / δ (δ = 2σ of the reference seeds)</text>
+    <text style="fill: #292122; font: 700 11.5px 'DejaVu Sans'; text-anchor: start" x="60.48" y="385.984" transform="rotate(-0 60.48 385.984)">Pooled difference per 100-step window, D / δ (δ = 2σ of the baseline seeds)</text>
    </g>
    <g id="legend_3">
     <g id="patch_12">
@@ -5682,7 +5682,7 @@ L 842.4 615.168
    </g>
   </g>
   <g id="text_86">
-   <text style="fill: #292122; font: 700 18px 'DejaVu Sans'; text-anchor: start" x="51.84" y="31.104" transform="rotate(-0 51.84 31.104)">Faster-BAGEL vs reference: 4 seeds × 2,000 steps each</text>
+   <text style="fill: #292122; font: 700 18px 'DejaVu Sans'; text-anchor: start" x="51.84" y="31.104" transform="rotate(-0 51.84 31.104)">Faster-BAGEL vs baseline: 4 seeds × 2,000 steps each</text>
   </g>
   <g id="text_87">
    <text style="fill: #79696b; font: 10.5px 'DejaVu Sans'; text-anchor: start" x="51.84" y="53.9136" transform="rotate(-0 51.84 53.9136)">Official SFT recipe, eight 80 GB Hopper GPUs · training losses as 10-step means · held-out: 100 VLM rows (8,407 tokens) with images disjoint from training</text>
@@ -5698,7 +5698,7 @@ L 842.4 615.168
     </g>
    </g>
    <g id="text_89">
-    <text style="fill: #292122; font: 8.8px 'DejaVu Sans'; text-anchor: start" x="533.6" y="371.353875" transform="rotate(-0 533.6 371.353875)">Reference seed</text>
+    <text style="fill: #292122; font: 8.8px 'DejaVu Sans'; text-anchor: start" x="533.6" y="371.353875" transform="rotate(-0 533.6 371.353875)">Baseline seed</text>
    </g>
    <g id="PathCollection_6">
     <g>

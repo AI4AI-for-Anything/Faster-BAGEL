@@ -2,7 +2,7 @@
 
 These portable scripts follow the recorded production recipe. Path routing and process launch wrappers were adapted for release; the adapted GPU commands have **not** been rerun. The CPU report was run on the complete archived records and reproduced both original verdicts. This is a separate long-run analysis, not the frozen performance/numerical harness described in docs/judge.md.
 
-Each training arm needs **8 × 80 GB Hopper GPUs**, about 1 TiB CPU RAM and at least 600 GiB free local checkpoint space. Reference training took 59–62 minutes per 2000-step run; M6 took 35–37 minutes, including initialization and saves. Each final model/EMA evaluation takes roughly 4–6 minutes; two are required per arm. Eight runs plus 16 evaluations cost about 60 GPU-hours. Keep checkpoint `0002000` until both evaluations complete. The trainer logs steps 0–1999 and increments its counter before the final save.
+Each training arm needs **8 × 80 GB Hopper GPUs**, about 1 TiB CPU RAM and at least 600 GiB free local checkpoint space. Baseline training took 59–62 minutes per 2000-step run; M6 took 35–37 minutes, including initialization and saves. Each final model/EMA evaluation takes roughly 4–6 minutes; two are required per arm. Eight runs plus 16 evaluations cost about 60 GPU-hours. Keep checkpoint `0002000` until both evaluations complete. The trainer logs steps 0–1999 and increments its counter before the final save.
 
 ## Recompute archived results without GPUs
 
@@ -17,7 +17,9 @@ python docs/performance-views/render.py
 
 This checks all continuous 2000-step sequences and held-out token-weighted CE, computes both fixed rules, verifies every archived four-seed comparison, and writes a JSON summary, verdict tables and loss plot. No model or data download is involved. The archived per-row scores contain numeric row indices only; data, images, tensor batches and checkpoints are not included.
 
-## Prepare a matching reference and held-out inputs
+<a id="prepare-a-matching-reference-and-held-out-inputs"></a>
+
+## Prepare a matching baseline and held-out inputs
 
 Use public model/data files described in docs/training.md. All paths below must be absolute. Use the recorded split hashes for exact reproduction; otherwise record the new split and treat it as a new experiment.
 
@@ -35,11 +37,11 @@ export GPU_LOCK=/path/to/shared-gpu.lock
 CUDA_VISIBLE_DEVICES='' python scripts/validate/prepare_heldout.py
 ```
 
-`prepare_reference.py` extracts the local pristine upstream branch, applies the common serial-load/logging patch and uses the portable dataset mapping. `prepare_heldout.py` uses unchanged reference packing/transforms, zero conditioning dropout and source JSONL order, checks every image-content hash for overlap with training, and freezes all 100 rows without truncation or omission. It writes a manifest and tensor batches under BAGEL_EVAL_DIR. It requires exactly the recorded 8407 supervised tokens for the subsequent comparison.
+`prepare_reference.py` extracts the local pristine upstream branch, applies the common serial-load/logging patch and uses the portable dataset mapping. `prepare_heldout.py` uses unchanged baseline packing/transforms, zero conditioning dropout and source JSONL order, checks every image-content hash for overlap with training, and freezes all 100 rows without truncation or omission. It writes a manifest and tensor batches under BAGEL_EVAL_DIR. It requires exactly the recorded 8407 supervised tokens for the subsequent comparison.
 
 ## Run each arm and evaluate its final model and EMA
 
-Set fresh checkpoint/cache directories separately for each arm. The training launcher takes GPU_LOCK itself; do not nest another lock around run_arm.py. Schedule one eight-rank job per machine. Start the reference jobs first when three machines are available.
+Set fresh checkpoint/cache directories separately for each arm. The training launcher takes GPU_LOCK itself; do not nest another lock around run_arm.py. Schedule one eight-rank job per machine. Start the baseline jobs first when three machines are available.
 
 ```bash
 export CHECKPOINT_DIR=/path/to/local/ref_s1-checkpoints
@@ -67,11 +69,11 @@ flock "$GPU_LOCK" python -m torch.distributed.run --standalone --nnodes=1 --npro
   --output /path/to/results/ref_s1/heldout_ema
 ```
 
-Inspect each evaluation's result.json: all 100 row IDs, 8407 tokens, finite scores, checkpoint hash and manifest hash. Only after both have succeeded should the run's own checkpoint/cache directories be removed. Keep results, inputs and failures; never repeat a failed or nonfinite training run to hide it. Evaluation uses strict full FP32 loading, reference FSDP BF16/autocast, eval mode without dropout, and the reference's packed teacher-forced methods. Four dummy forwards maintain collective parity but never enter the 100-row score.
+Inspect each evaluation's result.json: all 100 row IDs, 8407 tokens, finite scores, checkpoint hash and manifest hash. Only after both have succeeded should the run's own checkpoint/cache directories be removed. Keep results, inputs and failures; never repeat a failed or nonfinite training run to hide it. Evaluation uses strict full FP32 loading, baseline FSDP BF16/autocast, eval mode without dropout, and the baseline's packed teacher-forced methods. Four dummy forwards maintain collective parity but never enter the 100-row score.
 
 Repeat with distinct outputs/checkpoints/caches:
 
-| Suffix | Global seed | Reference output | M6 output |
+| Suffix | Global seed | Baseline output | M6 output |
 |---|---:|---|---|
 | s1 | 4396 | ref_s1 | opt_s1 |
 | s2 | 4397 | ref_s2 | opt_s2 |
@@ -92,4 +94,4 @@ CUDA_VISIBLE_DEVICES='' python scripts/validate/report.py \
 - Each training metric reports an exact two-sided binomial sign-test p over nonzero D; p<0.01 is a bias flag, not a failure by itself. Exact zero ties are reported separately.
 - Every recorded training and held-out value must be finite. Report all gradient spikes >10 and maximum norms, and preserve failures without reruns.
 
-The rule was fixed before the added runs. A few implementation preflight checks finished after the first new reference metrics arrived; no threshold was changed in response. The four-seed result is CONSISTENT, with 1/0/1 failed CE/MSE/log-gradient windows, all final windows and both held-out scores passing, and no bias flag. It does not replace the original result or establish identical quality distributions. Repeated t2i/edit fixtures do not establish generalization; only the disjoint VLM held-out CE addresses it.
+The rule was fixed before the added runs. A few implementation preflight checks finished after the first new baseline metrics arrived; no threshold was changed in response. The four-seed result is CONSISTENT, with 1/0/1 failed CE/MSE/log-gradient windows, all final windows and both held-out scores passing, and no bias flag. It does not replace the original result or establish identical quality distributions. Repeated t2i/edit fixtures do not establish generalization; only the disjoint VLM held-out CE addresses it.

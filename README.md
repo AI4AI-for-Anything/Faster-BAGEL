@@ -8,12 +8,12 @@
 
 | Implementation | Time / training step (s) ↓ | Speedup ↑ |
 |---|---:|---:|
-| Reference | 1.4367 | 1.00× |
+| Baseline | 1.4367 | 1.00× |
 | **Faster-BAGEL** | **0.7873** | **1.82×** |
 
-Measured with a full check on **8 Hopper GPUs (80 GB)**: supervised fine-tuning of the released BAGEL-7B-MoT checkpoint (14.61B parameters) with the official recipe. That means FSDP `HYBRID_SHARD` 1×8, FP32 parameters, FP32 AdamW state and FP32 EMA, BF16 compute, about 4,096 packed tokens per GPU, and **no FP8**. The timer runs the repository's real training loop. Reference, candidate and reference run in independent processes on the same host with fresh compile caches. The candidate then passed the check's numerical gates by **statistical equivalence**; it is not bitwise identical. The exact ratio is **1.8249×**. The goal was 3×; it was not reached.
+Measured with a full check on **8 Hopper GPUs (80 GB)**: supervised fine-tuning of the released BAGEL-7B-MoT checkpoint (14.61B parameters) with the official recipe. That means FSDP `HYBRID_SHARD` 1×8, FP32 parameters, FP32 AdamW state and FP32 EMA, BF16 compute, about 4,096 packed tokens per GPU, and **no FP8**. The timer runs the repository's real training loop. Baseline, candidate and baseline run in independent processes on the same host with fresh compile caches. The candidate then passed the check's numerical gates by **statistical equivalence**; it is not bitwise identical. The exact ratio is **1.8249×**. The goal was 3×; it was not reached.
 
-In the 2,000-step validation runs, each start-to-exit time includes initialization and checkpoint saves. Faster-BAGEL took **2,110–2,209 s** against **3,517–3,726 s** for the reference, about **0.73–0.76 s vs 1.46–1.53 s** per steady step. These runs were on different hosts, so the numbers are descriptive, not a paired benchmark. Memory rises: peak 60.05 / 73.36 GiB allocated / reserved per GPU in the full check, against 41.16 / 57.89 GiB for the reference.
+In the 2,000-step validation runs, each start-to-exit time includes initialization and checkpoint saves. Faster-BAGEL took **2,110–2,209 s** against **3,517–3,726 s** for the baseline, about **0.73–0.76 s vs 1.46–1.53 s** per steady step. These runs were on different hosts, so the numbers are descriptive, not a paired benchmark. Memory rises: peak 60.05 / 73.36 GiB allocated / reserved per GPU in the full check, against 41.16 / 57.89 GiB for the baseline.
 
 ## Quick Start
 
@@ -63,13 +63,13 @@ See the [switch table](docs/training.md#switches) and the [measured configuratio
 **Numerical check.** The final configuration passed the [frozen judge](docs/judge.md). The judge was built and calibrated on the 7B workload itself, not on a proxy model.
 - **Exact items:** structure, input batches, RNG fingerprints, call counts and learning rates, with no failure.
 - **Bitwise:** 1,038 of 5,696 recorded tensors were bitwise identical rather than all, so the statistical gate decided.
-- **Statistical gate:** 260-step paired trajectories with three seeds. Fourteen endpoints cover CE, MSE, gradient norm, and the parameter and EMA displacement of the ViT, the LM and the rest. All fourteen were within δ, where δ is twice the reference's own seed-to-seed standard deviation, frozen from six reference seeds.
+- **Statistical gate:** 260-step paired trajectories with three seeds. Fourteen endpoints cover CE, MSE, gradient norm, and the parameter and EMA displacement of the ViT, the LM and the rest. All fourteen were within δ, where δ is twice the baseline's own seed-to-seed standard deviation, frozen from six baseline seeds.
 
 The judge rejected every semantic change in its acceptance tests. Its margin is thin:
 - **LR × 1.02 control:** caught only by EMA displacement, at +1.43 δ and +1.16 δ with six seeds.
 - **A later candidate, M7:** timed 1.8972× and was rejected as INCORRECT, with LM displacement at −3.0 δ.
 
-**Long training.** Faster-BAGEL and the reference were each trained for the full 2,000-step recipe with four seeds (global seeds 4396–4399, data seed 42). Each final model and EMA was scored on 100 held-out VLM rows whose images are disjoint from training (8,407 text tokens), with the reference evaluator. No run had a non-finite value.
+**Long training.** Faster-BAGEL and the baseline were each trained for the full 2,000-step recipe with four seeds (global seeds 4396–4399, data seed 42). Each final model and EMA was scored on 100 held-out VLM rows whose images are disjoint from training (8,407 text tokens), with the baseline evaluator. No run had a non-finite value.
 
 ![Four seeds per implementation: training curves, pooled window differences and held-out CE](docs/performance-views/04-validation.svg)
 
@@ -79,13 +79,13 @@ The judge rejected every semantic change in its acceptance tests. Its margin is 
 | Round 2: four seeds, \|D\| ≤ 2σ<sub>ref</sub>, fixed before the runs | 19 / 20 | 20 / 20 | 19 / 20 | both pass | **CONSISTENT** |
 
 **How the two rounds differ:**
-- **Round 1:** the yardstick was the difference between the reference's two seeds. Both seeds shared the data order, so that yardstick was often tiny (4 × 10⁻⁶ in one CE window), and the round failed. Its result is kept as recorded.
-- **Round 2:** the criterion was written down before the two new seeds ran: D = mean(Faster-BAGEL) − mean(reference) and δ = 2 × the reference's sample SD over four seeds. Each training metric may miss at most two windows and must pass its final window.
+- **Round 1:** the yardstick was the difference between the baseline's two seeds. Both seeds shared the data order, so that yardstick was often tiny (4 × 10⁻⁶ in one CE window), and the round failed. Its result is kept as recorded.
+- **Round 2:** the criterion was written down before the two new seeds ran: D = mean(Faster-BAGEL) − mean(baseline) and δ = 2 × the baseline's sample SD over four seeds. Each training metric may miss at most two windows and must pass its final window.
   - All final windows passed.
   - Sign tests over the 20 windows gave p = 0.50 (CE), 0.041 (MSE) and 0.26 (log norm); none triggered the p < 0.01 bias flag. Faster-BAGEL's MSE was lower in 15 of 20 windows.
   - Held-out model CE: 1.3423 vs 1.3294 (D = +0.0129, δ = 0.0683). EMA CE: 0.74328 vs 0.74489 (D = −0.0016, δ = 0.0019).
 
-**Caveat.** The image-generation and editing examples repeat one image and one four-image chain, so their losses measure fitting a fixture. Only the held-out VLM CE is generalization evidence, and generation quality was not evaluated. Gradient-norm spikes above 10 occurred in both implementations; the largest per run was 25–86 for the reference and 60–91 for Faster-BAGEL. Four seeds are evidence under the stated criterion, not proof of identical training distributions.
+**Caveat.** The image-generation and editing examples repeat one image and one four-image chain, so their losses measure fitting a fixture. Only the held-out VLM CE is generalization evidence, and generation quality was not evaluated. Gradient-norm spikes above 10 occurred in both implementations; the largest per run was 25–86 for the baseline and 60–91 for Faster-BAGEL. Four seeds are evidence under the stated criterion, not proof of identical training distributions.
 
 See the [validation records](docs/validation/) and [the scripts to rerun it](scripts/validate/README.md).
 

@@ -338,7 +338,7 @@ z
    <text style="fill: #292122; font: 700 9.6px 'DejaVu Sans'; text-anchor: start" x="385.56" y="500.1315" transform="rotate(-0 385.56 500.1315)">Reversible whole-document LM balancing</text>
   </g>
   <g id="text_35">
-   <text style="fill: #79696b; font: 9.3px 'DejaVu Sans'" transform="translate(58.32 548.74545)">Each point is a full check by the same frozen judge on the same host; M1 is bitwise identical to the reference,</text>
+   <text style="fill: #79696b; font: 9.3px 'DejaVu Sans'" transform="translate(58.32 548.74545)">Each point is a full check by the same frozen judge on the same host; M1 is bitwise identical to the baseline,</text>
    <text style="fill: #79696b; font: 9.3px 'DejaVu Sans'" transform="translate(58.32 560.572725)">M2–M6 passed the statistical gate. M7 timed faster but the gate found a real deviation, so it was rejected.</text>
    <text style="fill: #79696b; font: 9.3px 'DejaVu Sans'" transform="translate(58.32 572.4)">Cumulative configurations, not isolated ablations. Target was 3×.</text>
   </g>

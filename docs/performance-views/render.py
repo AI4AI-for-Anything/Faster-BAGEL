@@ -63,7 +63,7 @@ def hero():
              color=MUTED, fontsize=10.5)
     ax = fig.add_axes([.24, .24, .39, .45])
     ax.barh([1, 0], values, color=[LIGHT, RED], height=.24, zorder=3)
-    ax.set_yticks([1, 0], ['Reference', 'Faster-BAGEL'])
+    ax.set_yticks([1, 0], ['Baseline', 'Faster-BAGEL'])
     for y, value in zip([1, 0], values):
         ax.text(value + 25, y, f'{value:,.0f} ms', va='center', color=INK, fontsize=11.5, weight='bold')
     ax.set_xlim(0, 1950)
@@ -75,8 +75,8 @@ def hero():
     fig.text(.85, .54, f"{final['speedup']:.2f}×", color=RED, fontsize=35, weight='bold', ha='center')
     fig.text(.85, .43, 'step speedup', color=MUTED, fontsize=12, ha='center')
     fig.text(.85, .36, 'full check: PASS', color=MUTED, fontsize=10, ha='center')
-    fig.text(.06, .075, 'Reference → candidate → reference in independent processes on one host; reference = mean of '
-             'the two reference runs.', color=MUTED, fontsize=9.5)
+    fig.text(.06, .075, 'Baseline → candidate → baseline in independent processes on one host; baseline = mean of '
+             'the two baseline runs.', color=MUTED, fontsize=9.5)
     fig.text(.06, .03, f"Two 100-step windows per run after warm-up · exact ratio {final['speedup']:.4f}× · numerically "
              'equivalent by the statistical gate (not bitwise).', color=MUTED, fontsize=9.5)
     save(fig, ROOT / '01-benchmark')
@@ -139,7 +139,7 @@ def history():
         fig.text(bx + .065, by - .15 / height, label, fontsize=9.6, color=INK, weight='bold', va='center',
                  linespacing=1.22)
     fig.text(.09, top(7.95), 'Each point is a full check by the same frozen judge on the same host; M1 is bitwise identical '
-             'to the reference,\nM2–M6 passed the statistical gate. M7 timed faster but the gate found a real deviation, '
+             'to the baseline,\nM2–M6 passed the statistical gate. M7 timed faster but the gate found a real deviation, '
              'so it was rejected.\nCumulative configurations, not isolated ablations. Target was 3×.',
              fontsize=9.3, color=MUTED, linespacing=1.4)
     save(fig, ROOT / '02-history')
@@ -177,7 +177,7 @@ def time_budget():
     ax.set_xlabel('ms per step on one GPU', color=MUTED, labelpad=8, fontsize=10.5)
     union = data['compute_union_s_per_step'] * 1e3
     fig.text(.06, .17, f"Compute alone (union of all kernels): {union:.0f} ms per step vs {ref_ms / 3:.0f} ms for 3× "
-             f"(measured {cand_ms:.0f} ms; reference {ref_ms:.0f} ms).", fontsize=10, color=INK)
+             f"(measured {cand_ms:.0f} ms; baseline {ref_ms:.0f} ms).", fontsize=10, color=INK)
     fig.text(.06, .035, f"Packed tokens per rank are fixed by the recipe and uneven (heaviest/mean "
              f"{data['earlier_max_to_mean_packed_length']:.2f}); the forward is CPU-launch-bound;\nGEMMs run near "
              f"{data['earlier_gemm_peak_fraction'] * 100:.0f}% of the BF16 peak. An earlier estimate put the ceiling at about "
@@ -194,7 +194,7 @@ def validation():
     n = len(curves[refs[0]]['ce'])
     x = (np.arange(n) + 1) * (2000 // n)
     fig = plt.figure(figsize=(12, 9.6), facecolor='white')
-    fig.text(.06, .955, f'Faster-BAGEL vs reference: {len(refs)} seeds × 2,000 steps each', color=INK, weight='bold',
+    fig.text(.06, .955, f'Faster-BAGEL vs baseline: {len(refs)} seeds × 2,000 steps each', color=INK, weight='bold',
              fontsize=18)
     fig.text(.06, .922, 'Official SFT recipe, eight 80 GB Hopper GPUs · training losses as 10-step means · held-out: '
              '100 VLM rows (8,407 tokens) with images disjoint from training', color=MUTED, fontsize=10.5)
@@ -209,7 +209,7 @@ def validation():
         ax.set_title(title, loc='left', color=INK, fontsize=11.5, weight='bold', pad=8)
 
     def band(ax, metric):
-        for arms, color, lw, z, lab in ((refs, GREY, 2.4, 2, 'Reference'), (opts, RED, 1.1, 3, 'Faster-BAGEL')):
+        for arms, color, lw, z, lab in ((refs, GREY, 2.4, 2, 'Baseline'), (opts, RED, 1.1, 3, 'Faster-BAGEL')):
             m = np.array([curves[a][metric] for a in arms])
             for i, row in enumerate(m):
                 ax.plot(x, row, color=color, linewidth=lw * .55, alpha=.55, zorder=z)
@@ -239,7 +239,7 @@ def validation():
     lim = max(1.9, max(abs(w['D'] / w['delta']) for m in styles for w in r2['training'][m]['windows']) + .4)
     ax.set_xlim(0, 2000)
     ax.set_ylim(-lim, lim)
-    panel(ax, 'Pooled difference per 100-step window, D / δ (δ = 2σ of the reference seeds)')
+    panel(ax, 'Pooled difference per 100-step window, D / δ (δ = 2σ of the baseline seeds)')
     ax.title.set_fontsize(10.5)
     ax.set_xlabel('step', color=MUTED, fontsize=10)
     ax.legend(loc='upper left', frameon=False, fontsize=8.6, labelcolor=INK, ncol=2, columnspacing=1.2)
@@ -256,7 +256,7 @@ def validation():
                    linewidth=0, zorder=1)
         ax.axhline(st['reference_mean'], color=GREY, linewidth=1.2, zorder=2)
         ax.axhline(st['candidate_mean'], color=RED, linewidth=1.4, zorder=2)
-        ax.scatter([s - .12 for s in seeds], rv, s=55, color=GREY, zorder=3, label='Reference')
+        ax.scatter([s - .12 for s in seeds], rv, s=55, color=GREY, zorder=3, label='Baseline')
         ax.scatter([s + .12 for s in seeds], ov, s=32, color=RED, marker='D', zorder=4, label='Faster-BAGEL')
         ax.set_xticks(seeds, [f's{i + 1}' for i in seeds])
         ax.set_xlim(-.6, len(seeds) - .4)
@@ -265,7 +265,7 @@ def validation():
         ax.text(.5, -.2, f"D = {st['D']:+.4f}   δ = {st['delta']:.4f}", transform=ax.transAxes, ha='center',
                 fontsize=9.2, color=INK)
         if k == 0:
-            fig.legend(handles=ax.get_legend_handles_labels()[0], labels=['Reference seed', 'Faster-BAGEL seed'],
+            fig.legend(handles=ax.get_legend_handles_labels()[0], labels=['Baseline seed', 'Faster-BAGEL seed'],
                        loc=(.585, .455), ncol=2, frameon=False, fontsize=8.8, labelcolor=INK)
     t = r2['training']
     fig.text(.06, .008, f"Round 2 (four seeds, criterion fixed before the runs): consistent windows CE "

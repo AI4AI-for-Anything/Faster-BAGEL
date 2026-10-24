@@ -248,7 +248,7 @@ L 562.9581 89.28
    <text style="fill: #79696b; font: 10.2px 'DejaVu Sans'; text-anchor: start" x="38.88" y="58.9248" transform="rotate(-0 38.88 58.9248)">M6 · profiled GPU time per step on rank 0 (4 steps under the profiler) vs the step-time budgets</text>
   </g>
   <g id="text_25">
-   <text style="fill: #292122; font: 10px 'DejaVu Sans'; text-anchor: start" x="38.88" y="370.512" transform="rotate(-0 38.88 370.512)">Compute alone (union of all kernels): 634 ms per step vs 479 ms for 3× (measured 787 ms; reference 1437 ms).</text>
+   <text style="fill: #292122; font: 10px 'DejaVu Sans'; text-anchor: start" x="38.88" y="370.512" transform="rotate(-0 38.88 370.512)">Compute alone (union of all kernels): 634 ms per step vs 479 ms for 3× (measured 787 ms; baseline 1437 ms).</text>
   </g>
   <g id="text_26">
    <text style="fill: #79696b; font: 9.3px 'DejaVu Sans'" transform="translate(38.88 407.12145)">Packed tokens per rank are fixed by the recipe and uneven (heaviest/mean 1.24); the forward is CPU-launch-bound;</text>
