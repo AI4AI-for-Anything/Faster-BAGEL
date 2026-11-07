@@ -102,6 +102,10 @@ An earlier estimate put the ceiling at about 2.1× with these kernels, even if w
 
 See the [rejected directions](docs/training.md#rejected-directions) and the [judge record](docs/judge.md).
 
+## TPU v6e (experimental)
+
+A port of the training step to 64 TPU v6e chips with PyTorch/XLA is in [`tpu_smoke/`](tpu_smoke/README.md). On a homogeneous synthetic fixture only (8 samples with identical layout, random weights), the recipe step went from 11,201 ms for the upstream path run one sample at a time to about 1,170 ms (about 9.6×); the batched path raises on real SFT data (mixed layouts, multi-image samples, samples without a ViT or VAE image), so it has not been run on real data, and no downstream evaluation or long training was done on TPU. See [TPU v6e results and limitations](docs/tpu-v6e-results.md).
+
 ## More AI4AI-for-Anything projects
 
 [Faster-R3](https://github.com/AI4AI-for-Anything/Faster-R3) · [Faster-YOCO](https://github.com/AI4AI-for-Anything/Faster-YOCO) · [Faster-JiT](https://github.com/AI4AI-for-Anything/Faster-JiT) · [Faster-RAE](https://github.com/AI4AI-for-Anything/Faster-RAE) · [Faster-LLaVA](https://github.com/AI4AI-for-Anything/Faster-LLaVA) · [Faster-DMD](https://github.com/AI4AI-for-Anything/Faster-DMD) · [Faster-SelfForcing](https://github.com/AI4AI-for-Anything/Faster-SelfForcing)

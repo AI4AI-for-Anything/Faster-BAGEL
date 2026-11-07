@@ -98,6 +98,10 @@ bash scripts/train_faster_bagel_sft.sh
 
 见[放弃的方向](docs/training.md#rejected-directions)和[判卷记录](docs/judge.md)。
 
+## TPU v6e（实验性）
+
+训练步在 64 芯 TPU v6e 上的 PyTorch/XLA 移植放在 [`tpu_smoke/`](tpu_smoke/README.md)。只在同构合成夹具上（8 个样本布局完全相同，权重随机初始化），配方步从上游路径逐个样本串行跑的 11,201 ms 降到约 1,170 ms（约 9.6×）；批量路径遇到真实 SFT 数据会直接报错（样本间布局不同、一个样本多张图、样本缺 ViT 图或 VAE 图），所以没有在真实数据上跑过，TPU 上也没有做下游评测和长训练。见 [TPU v6e 结果与局限](docs/tpu-v6e-results.md)（英文）。
+
 ## AI4AI-for-Anything 的其他项目
 
 [Faster-R3](https://github.com/AI4AI-for-Anything/Faster-R3) · [Faster-YOCO](https://github.com/AI4AI-for-Anything/Faster-YOCO) · [Faster-JiT](https://github.com/AI4AI-for-Anything/Faster-JiT) · [Faster-RAE](https://github.com/AI4AI-for-Anything/Faster-RAE) · [Faster-LLaVA](https://github.com/AI4AI-for-Anything/Faster-LLaVA) · [Faster-DMD](https://github.com/AI4AI-for-Anything/Faster-DMD) · [Faster-SelfForcing](https://github.com/AI4AI-for-Anything/Faster-SelfForcing)
